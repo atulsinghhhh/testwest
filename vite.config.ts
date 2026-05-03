@@ -26,7 +26,11 @@ export default defineConfig({
 			},
 			server: {
 				build: {
-					outDir: "dist-server",
+					rollupOptions: {
+						output: {
+							entryFileNames: "server.js",
+						},
+					},
 				},
 			},
 		},
