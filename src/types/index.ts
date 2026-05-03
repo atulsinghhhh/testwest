@@ -158,4 +158,3 @@ export interface SubjectStat {
   testsTaken: number;
   trend: number;
 }
-

@@ -35,12 +35,7 @@ export function SubtopicStep({ chapter, topic, value, onChange }: Props) {
       {subtopics && subtopics.length > 0 && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {subtopics.map((st) => (
-            <OptionCard
-              key={st}
-              title={st}
-              selected={value === st}
-              onClick={() => onChange(st)}
-            />
+            <OptionCard key={st} title={st} selected={value === st} onClick={() => onChange(st)} />
           ))}
         </div>
       )}

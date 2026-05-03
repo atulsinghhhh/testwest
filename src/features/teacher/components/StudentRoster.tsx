@@ -94,29 +94,40 @@ export function StudentRoster({ students }: { students: Student[] }) {
             <TableBody>
               {filtered.map((s) => (
                 <TableRow key={s.id || s._id}>
-                   <TableCell>
-                     <div className="flex items-center gap-3">
-                       <Avatar className="h-8 w-8">
-                         <AvatarFallback className="bg-primary-soft text-[10px] text-accent-foreground">
-                           {initials(s.firstName, s.lastName)}
-                         </AvatarFallback>
-                       </Avatar>
-                       <div className="min-w-0">
-                         <p className="truncate text-sm font-medium">{s.firstName} {s.lastName}</p>
-                         <p className="truncate text-xs text-muted-foreground">{s.rollNo || ""}</p>
-                       </div>
-                     </div>
-                   </TableCell>
-                   <TableCell className="text-sm">{s.className || `${s.grade}${s.section || ""}`}</TableCell>
-                   <TableCell className="text-right text-sm font-medium tabular-nums">{s.avgScore || 0}%</TableCell>
-                   <TableCell className="text-right text-sm tabular-nums text-muted-foreground">{s.testsTaken || 0}</TableCell>
-                   <TableCell className="text-xs text-success">{s.strongSubject || "—"}</TableCell>
-                   <TableCell className="text-xs text-destructive">{s.weakSubject || "—"}</TableCell>
-                   <TableCell className={`text-right text-xs font-medium tabular-nums ${(s.trend || 0) >= 0 ? "text-success" : "text-destructive"}`}>
-                     {(s.trend || 0) >= 0 ? "+" : ""}{s.trend || 0}%
-                   </TableCell>
-                 </TableRow>
-               ))}
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary-soft text-[10px] text-accent-foreground">
+                          {initials(s.firstName, s.lastName)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">
+                          {s.firstName} {s.lastName}
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">{s.rollNo || ""}</p>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {s.className || `${s.grade}${s.section || ""}`}
+                  </TableCell>
+                  <TableCell className="text-right text-sm font-medium tabular-nums">
+                    {s.avgScore || 0}%
+                  </TableCell>
+                  <TableCell className="text-right text-sm tabular-nums text-muted-foreground">
+                    {s.testsTaken || 0}
+                  </TableCell>
+                  <TableCell className="text-xs text-success">{s.strongSubject || "—"}</TableCell>
+                  <TableCell className="text-xs text-destructive">{s.weakSubject || "—"}</TableCell>
+                  <TableCell
+                    className={`text-right text-xs font-medium tabular-nums ${(s.trend || 0) >= 0 ? "text-success" : "text-destructive"}`}
+                  >
+                    {(s.trend || 0) >= 0 ? "+" : ""}
+                    {s.trend || 0}%
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

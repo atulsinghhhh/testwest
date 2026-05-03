@@ -20,7 +20,7 @@ const descriptions: Record<string, string> = {
 
 export function BoardStep({ value, onChange }: Props) {
   const { data: boardsResult, isLoading } = useBoards();
-  
+
   // Merge static ALL_BOARDS with dynamic results from DB, keeping them unique
   const boards = useMemo(() => {
     const dbBoards = boardsResult || [];

@@ -27,9 +27,7 @@ export function OptionCard({
       aria-pressed={selected}
       className={cn(
         "group relative flex w-full items-start gap-3 rounded-2xl border bg-card p-4 text-left transition-all hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        selected
-          ? "border-primary ring-2 ring-primary/30"
-          : "hover:border-primary/30",
+        selected ? "border-primary ring-2 ring-primary/30" : "hover:border-primary/30",
         className,
       )}
     >
@@ -37,7 +35,9 @@ export function OptionCard({
         <span
           className={cn(
             "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-            selected ? "bg-primary text-primary-foreground" : "bg-primary-soft text-accent-foreground",
+            selected
+              ? "bg-primary text-primary-foreground"
+              : "bg-primary-soft text-accent-foreground",
           )}
         >
           {icon}

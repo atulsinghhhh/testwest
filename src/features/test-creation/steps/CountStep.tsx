@@ -20,9 +20,7 @@ export function CountStep({ value, onChange }: Props) {
               Questions
             </p>
             <p className="mt-1 text-5xl font-semibold tabular-nums tracking-tight">{value}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              ≈ {estMinutes} minutes to complete
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">≈ {estMinutes} minutes to complete</p>
           </div>
           <Slider
             value={[value]}

@@ -41,7 +41,7 @@ export function TestCreationWizard() {
   // Prefill board and grade from user profile once
   useEffect(() => {
     if (user?.profile && !hasPreFilled) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         board: prev.board || user.profile.board || null,
         grade: prev.grade || user.profile.grade || null,
@@ -74,33 +74,33 @@ export function TestCreationWizard() {
 
       // Filter out null values to satisfy backend validation (Zod optional() doesn't like null)
       const filteredPayload = Object.fromEntries(
-        Object.entries(payload).filter(([_, v]) => v !== null)
+        Object.entries(payload).filter(([_, v]) => v !== null),
       );
 
-      const result = state.useAI 
+      const result = state.useAI
         ? await testService.generateAI(filteredPayload)
         : await testService.create(filteredPayload);
 
       setGenerated(true);
       toast.success("Test generated successfully!");
-      
+
       const testId = result.id || result._id;
-      
+
       // Navigate to the test taking page
       window.setTimeout(() => {
         navigate({ to: "/test/$testId/take", params: { testId } });
       }, 1000);
     } catch (err: any) {
-      toast.error(err.message || "Failed to generate test. Make sure you have enough questions in the database.");
+      toast.error(
+        err.message ||
+          "Failed to generate test. Make sure you have enough questions in the database.",
+      );
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const currentDef = useMemo(
-    () => STEPS.find((s) => s.id === currentStep)!,
-    [currentStep],
-  );
+  const currentDef = useMemo(() => STEPS.find((s) => s.id === currentStep)!, [currentStep]);
   const currentIndex = STEPS.findIndex((s) => s.id === currentStep);
   const stepValid = isStepValid(currentStep, state);
 
@@ -175,11 +175,7 @@ export function TestCreationWizard() {
         <aside className="lg:sticky lg:top-20 lg:self-start">
           <Card>
             <CardContent className="p-3">
-              <StepProgress
-                currentStep={currentStep}
-                completed={completed}
-                onJump={jumpTo}
-              />
+              <StepProgress currentStep={currentStep} completed={completed} onJump={jumpTo} />
             </CardContent>
           </Card>
         </aside>
@@ -193,22 +189,13 @@ export function TestCreationWizard() {
                 <p className="mt-1 text-sm text-muted-foreground">{currentDef.description}</p>
               </div>
 
-              <StepBody
-                step={currentStep}
-                state={state}
-                update={update}
-                jumpTo={jumpTo}
-              />
+              <StepBody step={currentStep} state={state} update={update} jumpTo={jumpTo} />
             </CardContent>
           </Card>
 
           {/* Footer nav */}
           <div className="mt-4 flex items-center justify-between gap-3">
-            <Button
-              variant="outline"
-              onClick={goBack}
-              disabled={currentIndex === 0}
-            >
+            <Button variant="outline" onClick={goBack} disabled={currentIndex === 0}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
@@ -314,19 +301,11 @@ function StepBody({ step, state, update, jumpTo }: BodyProps) {
         />
       );
     case "difficulty":
-      return (
-        <DifficultyStep value={state.difficulty} onChange={(v) => update("difficulty", v)} />
-      );
+      return <DifficultyStep value={state.difficulty} onChange={(v) => update("difficulty", v)} />;
     case "count":
       return <CountStep value={state.count} onChange={(v) => update("count", v)} />;
     case "review":
-      return (
-        <ReviewStep
-          state={state}
-          onEdit={jumpTo}
-          onToggleAI={(v) => update("useAI", v)}
-        />
-      );
+      return <ReviewStep state={state} onEdit={jumpTo} onToggleAI={(v) => update("useAI", v)} />;
   }
 }
 

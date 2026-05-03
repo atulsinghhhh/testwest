@@ -3,7 +3,13 @@ import { useState } from "react";
 import { authService } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/signup")({
   component: SignupRoute,
@@ -56,10 +62,16 @@ function SignupRoute() {
     <div className="flex min-h-screen items-center justify-center p-4 bg-background text-foreground">
       <div className="w-full max-w-md rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="text-2xl font-semibold mb-2 text-center">Create an account</h2>
-        <p className="mb-6 text-sm text-muted-foreground text-center">Join TestWest to start tracking progress</p>
-        
-        {error && <p className="mb-4 text-sm text-destructive bg-destructive/10 p-3 rounded-lg border border-destructive/20">{error}</p>}
-        
+        <p className="mb-6 text-sm text-muted-foreground text-center">
+          Join TestWest to start tracking progress
+        </p>
+
+        {error && (
+          <p className="mb-4 text-sm text-destructive bg-destructive/10 p-3 rounded-lg border border-destructive/20">
+            {error}
+          </p>
+        )}
+
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="flex p-1 bg-muted rounded-lg mb-6 overflow-x-auto">
             {(["STUDENT", "SOLO", "TEACHER", "PARENT", "SCHOOL"] as const).map((r) => (
@@ -68,7 +80,9 @@ function SignupRoute() {
                 type="button"
                 onClick={() => setRole(r)}
                 className={`flex-1 py-2 text-xs font-medium rounded-md transition-all whitespace-nowrap px-3 ${
-                  role === r ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  role === r
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {r.charAt(0) + r.slice(1).toLowerCase()}
@@ -79,33 +93,33 @@ function SignupRoute() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium mb-1 block">First name</label>
-              <Input 
-                type="text" 
-                value={firstName} 
-                onChange={(e) => setFirstName(e.target.value)} 
+              <Input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 placeholder="John"
-                required 
+                required
               />
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Last name</label>
-              <Input 
-                type="text" 
-                value={lastName} 
-                onChange={(e) => setLastName(e.target.value)} 
+              <Input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 placeholder="Doe"
-                required 
+                required
               />
             </div>
           </div>
           <div>
             <label className="text-sm font-medium mb-1 block">Email</label>
-            <Input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="you@example.com" 
-              required 
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
             />
           </div>
 
@@ -118,8 +132,10 @@ function SignupRoute() {
                     <SelectValue placeholder="Grade" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[1,2,3,4,5, 6, 7, 8, 9, 10, 11, 12].map((g) => (
-                      <SelectItem key={g} value={String(g)}>Grade {g}</SelectItem>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((g) => (
+                      <SelectItem key={g} value={String(g)}>
+                        Grade {g}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -132,7 +148,9 @@ function SignupRoute() {
                   </SelectTrigger>
                   <SelectContent>
                     {["CBSE", "ICSE", "IGCSE", "IB", "State Board"].map((b) => (
-                      <SelectItem key={b} value={b}>{b}</SelectItem>
+                      <SelectItem key={b} value={b}>
+                        {b}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -142,12 +160,12 @@ function SignupRoute() {
 
           <div>
             <label className="text-sm font-medium mb-1 block">Password</label>
-            <Input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              required 
+              required
               minLength={8}
             />
           </div>

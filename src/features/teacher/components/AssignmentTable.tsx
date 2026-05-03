@@ -65,9 +65,14 @@ export function AssignmentTable({ assignments }: { assignments: Assignment[] }) 
                       </p>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm">{a.targetLabel || a.className || "Class"}</TableCell>
+                  <TableCell className="text-sm">
+                    {a.targetLabel || a.className || "Class"}
+                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
-                    {new Date(a.dueDate).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                    {new Date(a.dueDate).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </TableCell>
                   <TableCell className="min-w-[140px]">
                     <div className="flex items-center gap-2">
@@ -81,7 +86,9 @@ export function AssignmentTable({ assignments }: { assignments: Assignment[] }) 
                     {submitted > 0 ? `${a.averageScore}%` : "—"}
                   </TableCell>
                   <TableCell>
-                    <span className={`inline-flex rounded-full px-2 py-1 text-[10px] uppercase tracking-wider ${statusStyles[a.status] ?? ""}`}>
+                    <span
+                      className={`inline-flex rounded-full px-2 py-1 text-[10px] uppercase tracking-wider ${statusStyles[a.status] ?? ""}`}
+                    >
                       {a.status}
                     </span>
                   </TableCell>

@@ -5,7 +5,12 @@ export const ALL_GRADES: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export const ALL_DIFFICULTIES: Difficulty[] = ["Easy", "Medium", "Hard"];
 
-export const ALL_QUESTION_TYPES: QuestionType[] = ["MCQ", "MSQ", "Fill in the blanks", "Short answer"];
+export const ALL_QUESTION_TYPES: QuestionType[] = [
+  "MCQ",
+  "MSQ",
+  "Fill in the blanks",
+  "Short answer",
+];
 
 export const QUESTION_TYPE_DESCRIPTIONS: Record<QuestionType, string> = {
   MCQ: "Single correct option",
@@ -14,7 +19,16 @@ export const QUESTION_TYPE_DESCRIPTIONS: Record<QuestionType, string> = {
   "Short answer": "A few sentences of explanation",
 };
 
-export const ALL_SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi", "Physics", "Chemistry", "Biology"];
+export const ALL_SUBJECTS = [
+  "Mathematics",
+  "Science",
+  "English",
+  "Social Studies",
+  "Hindi",
+  "Physics",
+  "Chemistry",
+  "Biology",
+];
 
 export const GRADIENT_MAP: Record<string, string> = {
   Mathematics: "from-blue-500/20 to-indigo-500/20",

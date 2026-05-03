@@ -13,7 +13,9 @@ export function MSQRenderer({ question, answer, onChange }: Props) {
 
   const toggle = (i: number) => {
     const has = selected.includes(i);
-    const next = has ? selected.filter((x: number) => x !== i) : [...selected, i].sort((a: number, b: number) => a - b);
+    const next = has
+      ? selected.filter((x: number) => x !== i)
+      : [...selected, i].sort((a: number, b: number) => a - b);
     onChange(next);
   };
 
@@ -29,13 +31,17 @@ export function MSQRenderer({ question, answer, onChange }: Props) {
             onClick={() => toggle(i)}
             className={cn(
               "flex w-full items-start gap-3 rounded-xl border bg-card p-4 text-left transition-all hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              isSelected ? "border-primary bg-primary-soft/40 ring-2 ring-primary/30" : "hover:border-primary/30",
+              isSelected
+                ? "border-primary bg-primary-soft/40 ring-2 ring-primary/30"
+                : "hover:border-primary/30",
             )}
           >
             <span
               className={cn(
                 "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border",
-                isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background",
+                isSelected
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-background",
               )}
             >
               {isSelected && <Check className="h-3 w-3" />}

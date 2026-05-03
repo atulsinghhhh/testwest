@@ -19,11 +19,11 @@ import { useEffect } from "react";
 export function StudentDashboard() {
   const navigate = useNavigate();
   const { data: user, isLoading: isUserLoading } = useUser();
-  
+
   // Use the student ID from the user profile, or null if loading
   const studentId = user?.profile?._id || user?.profile?.id || user?.id || user?._id || "";
-  
-  const { data, isLoading, error } = useStudentDashboard(studentId); 
+
+  const { data, isLoading, error } = useStudentDashboard(studentId);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -48,7 +48,6 @@ export function StudentDashboard() {
       </div>
     );
   }
-
 
   return (
     <PageContainer>
@@ -83,19 +82,39 @@ export function StudentDashboard() {
 
       {/* Stats */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Tests taken" value={data.stats.testsTaken} icon={Trophy} delta={8} hint="Last 30 days" />
-        <StatCard label="Avg score" value={`${data.stats.averageScore}%`} icon={Target} delta={4} hint="Across all subjects" />
-        <StatCard label="Accuracy" value={`${data.stats.accuracy}%`} icon={Activity} delta={3} hint="Correct / answered" />
-        <StatCard label="Avg time / question" value={`${data.stats.avgTimePerQuestionSec}s`} icon={Timer} delta={-6} hint="Faster than last month" />
+        <StatCard
+          label="Tests taken"
+          value={data.stats.testsTaken}
+          icon={Trophy}
+          delta={8}
+          hint="Last 30 days"
+        />
+        <StatCard
+          label="Avg score"
+          value={`${data.stats.averageScore}%`}
+          icon={Target}
+          delta={4}
+          hint="Across all subjects"
+        />
+        <StatCard
+          label="Accuracy"
+          value={`${data.stats.accuracy}%`}
+          icon={Activity}
+          delta={3}
+          hint="Correct / answered"
+        />
+        <StatCard
+          label="Avg time / question"
+          value={`${data.stats.avgTimePerQuestionSec}s`}
+          icon={Timer}
+          delta={-6}
+          hint="Faster than last month"
+        />
       </div>
 
       {/* Charts */}
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <ChartCard
-          title="Score trend"
-          subtitle="Your last 10 tests"
-          className="lg:col-span-2"
-        >
+        <ChartCard title="Score trend" subtitle="Your last 10 tests" className="lg:col-span-2">
           <ScoreTrendChart data={data.scoreTrend} />
         </ChartCard>
         <ChartCard title="Subject performance" subtitle="Average score by subject">
@@ -114,10 +133,7 @@ export function StudentDashboard() {
 
       {/* Weak areas */}
       <div className="mt-8">
-        <SectionHeader
-          title="Where to focus"
-          subtitle="Topics and subtopics that need attention"
-        />
+        <SectionHeader title="Where to focus" subtitle="Topics and subtopics that need attention" />
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <WeakTopicList title="Weak topics" items={data.weakTopics} />
           <WeakTopicList title="Weak subtopics" items={data.weakSubtopics} variant="subtopic" />
@@ -132,7 +148,10 @@ export function StudentDashboard() {
 
       {/* Focus insights */}
       <div className="mt-8">
-        <SectionHeader title="Recommended focus this week" subtitle="Bite-sized actions to lift your scores" />
+        <SectionHeader
+          title="Recommended focus this week"
+          subtitle="Bite-sized actions to lift your scores"
+        />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {data.focusInsights.map((i) => (
             <InsightCard key={i.id} tone={i.tone} title={i.title} description={i.description} />

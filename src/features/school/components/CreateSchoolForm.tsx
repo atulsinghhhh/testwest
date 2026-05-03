@@ -4,7 +4,14 @@ import { schoolService } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Building2, GraduationCap, MapPin, UserCheck, AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -29,7 +36,7 @@ export function CreateSchoolForm() {
         city,
         principal,
       });
-      
+
       // Navigate to the newly created school's dashboard or a success page
       // For now, let's go to the school dashboard route
       navigate({ to: "/dashboard/school" });
@@ -45,7 +52,9 @@ export function CreateSchoolForm() {
       <CardHeader className="space-y-1">
         <div className="flex items-center gap-2 text-primary">
           <Building2 className="h-5 w-5" />
-          <span className="text-sm font-semibold tracking-wider uppercase">Institutional Registration</span>
+          <span className="text-sm font-semibold tracking-wider uppercase">
+            Institutional Registration
+          </span>
         </div>
         <CardTitle className="text-2xl font-bold">Register your School</CardTitle>
         <CardDescription>
@@ -63,7 +72,9 @@ export function CreateSchoolForm() {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-sm font-medium">School Name</Label>
+            <Label htmlFor="name" className="text-sm font-medium">
+              School Name
+            </Label>
             <div className="relative">
               <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -79,7 +90,9 @@ export function CreateSchoolForm() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="board" className="text-sm font-medium">Education Board</Label>
+              <Label htmlFor="board" className="text-sm font-medium">
+                Education Board
+              </Label>
               <div className="relative">
                 <GraduationCap className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -93,7 +106,9 @@ export function CreateSchoolForm() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="city" className="text-sm font-medium">City</Label>
+              <Label htmlFor="city" className="text-sm font-medium">
+                City
+              </Label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -108,7 +123,9 @@ export function CreateSchoolForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="principal" className="text-sm font-medium">Principal Name</Label>
+            <Label htmlFor="principal" className="text-sm font-medium">
+              Principal Name
+            </Label>
             <div className="relative">
               <UserCheck className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -123,9 +140,9 @@ export function CreateSchoolForm() {
         </form>
       </CardContent>
       <CardFooter>
-        <Button 
+        <Button
           form="create-school-form"
-          type="submit" 
+          type="submit"
           className="w-full h-11 text-base font-semibold transition-all hover:shadow-md"
           disabled={loading}
         >

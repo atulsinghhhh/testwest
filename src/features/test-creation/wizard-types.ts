@@ -46,16 +46,66 @@ export interface StepDef {
 }
 
 export const STEPS: StepDef[] = [
-  { id: "board", title: "Choose your board", shortLabel: "Board", description: "Pick the curriculum your school follows." },
-  { id: "grade", title: "Select your grade", shortLabel: "Grade", description: "Tests are calibrated to grade level." },
-  { id: "subject", title: "Pick a subject", shortLabel: "Subject", description: "Available subjects for your grade." },
-  { id: "chapter", title: "Choose a chapter", shortLabel: "Chapter", description: "Narrow down to a specific chapter." },
-  { id: "topic", title: "Pick a topic", shortLabel: "Topic", description: "Focus your test on a single topic." },
-  { id: "subtopic", title: "Pick a subtopic", shortLabel: "Subtopic", description: "Optional — for highly focused practice." },
-  { id: "questionTypes", title: "Question types", shortLabel: "Types", description: "Choose one or more question formats." },
-  { id: "difficulty", title: "Set difficulty", shortLabel: "Difficulty", description: "How challenging should the test be?" },
-  { id: "count", title: "Number of questions", shortLabel: "Count", description: "5 to 50 questions per test." },
-  { id: "review", title: "Review and generate", shortLabel: "Review", description: "Confirm your selections to generate the test." },
+  {
+    id: "board",
+    title: "Choose your board",
+    shortLabel: "Board",
+    description: "Pick the curriculum your school follows.",
+  },
+  {
+    id: "grade",
+    title: "Select your grade",
+    shortLabel: "Grade",
+    description: "Tests are calibrated to grade level.",
+  },
+  {
+    id: "subject",
+    title: "Pick a subject",
+    shortLabel: "Subject",
+    description: "Available subjects for your grade.",
+  },
+  {
+    id: "chapter",
+    title: "Choose a chapter",
+    shortLabel: "Chapter",
+    description: "Narrow down to a specific chapter.",
+  },
+  {
+    id: "topic",
+    title: "Pick a topic",
+    shortLabel: "Topic",
+    description: "Focus your test on a single topic.",
+  },
+  {
+    id: "subtopic",
+    title: "Pick a subtopic",
+    shortLabel: "Subtopic",
+    description: "Optional — for highly focused practice.",
+  },
+  {
+    id: "questionTypes",
+    title: "Question types",
+    shortLabel: "Types",
+    description: "Choose one or more question formats.",
+  },
+  {
+    id: "difficulty",
+    title: "Set difficulty",
+    shortLabel: "Difficulty",
+    description: "How challenging should the test be?",
+  },
+  {
+    id: "count",
+    title: "Number of questions",
+    shortLabel: "Count",
+    description: "5 to 50 questions per test.",
+  },
+  {
+    id: "review",
+    title: "Review and generate",
+    shortLabel: "Review",
+    description: "Confirm your selections to generate the test.",
+  },
 ];
 
 export function isStepValid(step: StepId, state: WizardState): boolean {

@@ -11,11 +11,7 @@ import { WeakTopicList } from "@/components/dashboard/WeakTopicList";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
 import { InsightCard } from "@/components/dashboard/InsightCard";
 import { ChildSwitcher } from "@/components/dashboard/ChildSwitcher";
-import {
-  useUser,
-  useParentChildren,
-  useParentDashboard,
-} from "@/lib/api/hooks";
+import { useUser, useParentChildren, useParentDashboard } from "@/lib/api/hooks";
 import { parentService } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,8 +21,12 @@ export function ParentDashboard() {
   const { data: user, isLoading: isUserLoading } = useUser();
   const parentId = user?.profile?._id || user?.profile?.id || user?.id || user?._id || "";
 
-  const { data: childrenList, isLoading: isChildrenLoading, refetch: refetchChildren } = useParentChildren(parentId);
-  
+  const {
+    data: childrenList,
+    isLoading: isChildrenLoading,
+    refetch: refetchChildren,
+  } = useParentChildren(parentId);
+
   const [childId, setChildId] = useState<string>("");
   const [targetStudentId, setTargetStudentId] = useState("");
   const [isLinking, setIsLinking] = useState(false);
@@ -81,11 +81,12 @@ export function ParentDashboard() {
           </div>
           <h2 className="text-xl font-semibold mb-2">No children linked yet</h2>
           <p className="text-muted-foreground max-w-md mb-6">
-            Enter your child's student ID to link their account and start monitoring their progress. You can find this ID in your child's dashboard profile.
+            Enter your child's student ID to link their account and start monitoring their progress.
+            You can find this ID in your child's dashboard profile.
           </p>
           <div className="flex w-full max-w-sm items-center space-x-2">
-            <Input 
-              placeholder="Enter Student ID (e.g. 6629...)" 
+            <Input
+              placeholder="Enter Student ID (e.g. 6629...)"
               value={targetStudentId}
               onChange={(e) => setTargetStudentId(e.target.value)}
             />
@@ -113,8 +114,8 @@ export function ParentDashboard() {
         <p className="text-destructive font-medium">Failed to load data. Is the backend running?</p>
         {error && <p className="text-xs text-muted-foreground">{(error as any).message}</p>}
         <div className="mt-4 flex w-full max-w-sm items-center space-x-2">
-          <Input 
-            placeholder="Link another student ID" 
+          <Input
+            placeholder="Link another student ID"
             value={targetStudentId}
             onChange={(e) => setTargetStudentId(e.target.value)}
           />
@@ -140,7 +141,9 @@ export function ParentDashboard() {
             </h2>
             <div className="mt-1 flex flex-col gap-1">
               <p className="text-sm text-muted-foreground">
-                {child ? `Here's how ${child.name.split(" ")[0]} is progressing — Grade ${child.grade}, ${child.board}.` : "Select a child below."}
+                {child
+                  ? `Here's how ${child.name.split(" ")[0]} is progressing — Grade ${child.grade}, ${child.board}.`
+                  : "Select a child below."}
               </p>
             </div>
           </div>
@@ -149,13 +152,19 @@ export function ParentDashboard() {
               <ChildSwitcher children={childrenList} value={childId} onChange={setChildId} />
             )}
             <div className="flex items-center gap-2">
-              <Input 
-                placeholder="Link student ID" 
+              <Input
+                placeholder="Link student ID"
                 value={targetStudentId}
                 onChange={(e) => setTargetStudentId(e.target.value)}
                 className="w-40 h-9 text-xs"
               />
-              <Button onClick={handleLinkChild} disabled={isLinking} size="sm" variant="outline" className="h-9 px-3">
+              <Button
+                onClick={handleLinkChild}
+                disabled={isLinking}
+                size="sm"
+                variant="outline"
+                className="h-9 px-3"
+              >
                 {isLinking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Link"}
               </Button>
             </div>
@@ -165,10 +174,32 @@ export function ParentDashboard() {
 
       {/* Stats */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Tests completed" value={data.stats.testsCompleted} icon={BookCheck} hint="Last 30 days" />
-        <StatCard label="Average score" value={`${data.stats.averageScore}%`} icon={Target} delta={data.stats.improvementTrend} hint="vs previous month" />
-        <StatCard label="Weak topics" value={data.stats.weakTopicsCount} icon={Activity} hint="Areas needing support" />
-        <StatCard label="Improvement" value={`${data.stats.improvementTrend > 0 ? "+" : ""}${data.stats.improvementTrend}%`} icon={Sparkles} delta={data.stats.improvementTrend} hint="Trend this month" />
+        <StatCard
+          label="Tests completed"
+          value={data.stats.testsCompleted}
+          icon={BookCheck}
+          hint="Last 30 days"
+        />
+        <StatCard
+          label="Average score"
+          value={`${data.stats.averageScore}%`}
+          icon={Target}
+          delta={data.stats.improvementTrend}
+          hint="vs previous month"
+        />
+        <StatCard
+          label="Weak topics"
+          value={data.stats.weakTopicsCount}
+          icon={Activity}
+          hint="Areas needing support"
+        />
+        <StatCard
+          label="Improvement"
+          value={`${data.stats.improvementTrend > 0 ? "+" : ""}${data.stats.improvementTrend}%`}
+          icon={Sparkles}
+          delta={data.stats.improvementTrend}
+          hint="Trend this month"
+        />
       </div>
 
       {/* Charts */}
@@ -205,7 +236,9 @@ export function ParentDashboard() {
         <Card className="h-full">
           <CardHeader className="p-5 pb-2">
             <h3 className="text-sm font-semibold tracking-tight">Academic summary</h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">{child && `A quick read on ${child.name.split(" ")[0]}`}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {child && `A quick read on ${child.name.split(" ")[0]}`}
+            </p>
           </CardHeader>
           <CardContent className="space-y-4 p-5 pt-2">
             <p className="text-sm leading-relaxed text-foreground/90">{data.summary}</p>

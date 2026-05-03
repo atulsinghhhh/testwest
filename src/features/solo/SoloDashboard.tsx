@@ -35,7 +35,6 @@ export function SoloDashboard() {
   const [joinOpen, setJoinOpen] = useState(false);
   const [schoolCode, setSchoolCode] = useState("");
 
-
   if (isUserLoading || (user && !studentId && isLoading)) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-muted-foreground">
@@ -52,7 +51,6 @@ export function SoloDashboard() {
       </div>
     );
   }
-
 
   return (
     <PageContainer>
@@ -71,8 +69,8 @@ export function SoloDashboard() {
                 Hi {data.student.name.split(" ")[0]} — keep up the rhythm
               </h2>
               <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-                You're learning independently. Get smart auto-generated tests every week,
-                or create your own. Want a teacher's guidance? Link your school below.
+                You're learning independently. Get smart auto-generated tests every week, or create
+                your own. Want a teacher's guidance? Link your school below.
               </p>
             </div>
           </div>
@@ -91,8 +89,18 @@ export function SoloDashboard() {
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Tests taken" value={data.stats.testsTaken} icon={Trophy} hint="All time" />
-        <StatCard label="Avg score" value={`${data.stats.averageScore}%`} icon={Target} hint="Last 30 days" />
-        <StatCard label="Accuracy" value={`${data.stats.accuracy}%`} icon={Zap} hint="Across attempts" />
+        <StatCard
+          label="Avg score"
+          value={`${data.stats.averageScore}%`}
+          icon={Target}
+          hint="Last 30 days"
+        />
+        <StatCard
+          label="Accuracy"
+          value={`${data.stats.accuracy}%`}
+          icon={Zap}
+          hint="Across attempts"
+        />
         <StatCard label="Plan" value="Free" icon={Lock} hint="Upgrade for unlimited" />
       </div>
 
@@ -116,7 +124,7 @@ export function SoloDashboard() {
               </Button>
             }
           />
-         {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {autoTests.map((t) => (
               <Card key={t.id} className="transition-shadow hover:shadow-md">
                 <CardContent className="p-5">
@@ -161,7 +169,11 @@ export function SoloDashboard() {
               <SubjectPerformanceChart data={data.subjectPerformance} />
             </ChartCard>
           </div>
-          <WeakTopicList title="Weak topics" subtitle="Areas to focus on next" items={data.weakTopics} />
+          <WeakTopicList
+            title="Weak topics"
+            subtitle="Areas to focus on next"
+            items={data.weakTopics}
+          />
         </TabsContent>
 
         <TabsContent value="recent" className="mt-6">
@@ -175,7 +187,8 @@ export function SoloDashboard() {
           <DialogHeader>
             <DialogTitle>Link your school</DialogTitle>
             <DialogDescription>
-              Enter your school's TestWest code, or request to add your school if it isn't on TestWest yet.
+              Enter your school's TestWest code, or request to add your school if it isn't on
+              TestWest yet.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-3">
@@ -204,7 +217,9 @@ export function SoloDashboard() {
             </p>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setJoinOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setJoinOpen(false)}>
+              Cancel
+            </Button>
             <Button
               onClick={() => {
                 if (!schoolCode.trim()) return toast.error("Enter a school code");

@@ -18,7 +18,7 @@ function band(g: number) {
 
 export function GradeStep({ value, onChange }: Props) {
   const { data: gradesResult, isLoading } = useGrades();
-  const grades = (gradesResult && gradesResult.length > 0) ? gradesResult : ALL_GRADES;
+  const grades = gradesResult && gradesResult.length > 0 ? gradesResult : ALL_GRADES;
 
   if (isLoading) {
     return (
@@ -40,9 +40,7 @@ export function GradeStep({ value, onChange }: Props) {
             aria-pressed={selected}
             className={cn(
               "flex flex-col items-center justify-center rounded-2xl border bg-card p-4 transition-all hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              selected
-                ? "border-primary ring-2 ring-primary/30"
-                : "hover:border-primary/30",
+              selected ? "border-primary ring-2 ring-primary/30" : "hover:border-primary/30",
             )}
           >
             <span className="text-2xl font-semibold tabular-nums">{g}</span>

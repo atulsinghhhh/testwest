@@ -12,11 +12,16 @@ interface Props {
   onChange: (t: string) => void;
 }
 
-const SAMPLE_TOPICS = ["Core principles", "Standard methodologies", "Intermediate concepts", "Global perspectives"];
+const SAMPLE_TOPICS = [
+  "Core principles",
+  "Standard methodologies",
+  "Intermediate concepts",
+  "Global perspectives",
+];
 
 export function TopicStep({ subject, chapter, value, onChange }: Props) {
   const { data: topicsResult, isLoading } = useTopics(subject, chapter);
-  const topics = (topicsResult && topicsResult.length > 0) ? topicsResult : SAMPLE_TOPICS;
+  const topics = topicsResult && topicsResult.length > 0 ? topicsResult : SAMPLE_TOPICS;
 
   if (isLoading) {
     return (

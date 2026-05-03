@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/shell/AppShell";
 import { ParentDashboard } from "@/features/parent/ParentDashboard";
 
-
 export const Route = createFileRoute("/dashboard/parent")({
   head: () => ({
     meta: [
@@ -15,8 +14,7 @@ export const Route = createFileRoute("/dashboard/parent")({
       { property: "og:title", content: "Parent Dashboard — TestWest" },
       {
         property: "og:description",
-        content:
-          "Monitor your child's progress, weak areas, and recent activity on TestWest.",
+        content: "Monitor your child's progress, weak areas, and recent activity on TestWest.",
       },
     ],
   }),

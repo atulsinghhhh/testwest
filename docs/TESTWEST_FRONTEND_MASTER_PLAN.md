@@ -13,20 +13,22 @@ The frontend is a polished, modern, dashboard-first SaaS-edu product — premium
 
 ## 2. Roles
 
-| Role | Purpose | Phase |
-|---|---|---|
-| **STUDENT** | Generate/take tests, see performance, weak topics, motivation | Phase 1 ✅ |
-| **PARENT** | View linked child performance, weak areas, supportive insights | Phase 1 ✅ |
-| **ADMIN** | Manage questions, curriculum, users, moderation | Phase 5 |
+| Role        | Purpose                                                        | Phase      |
+| ----------- | -------------------------------------------------------------- | ---------- |
+| **STUDENT** | Generate/take tests, see performance, weak topics, motivation  | Phase 1 ✅ |
+| **PARENT**  | View linked child performance, weak areas, supportive insights | Phase 1 ✅ |
+| **ADMIN**   | Manage questions, curriculum, users, moderation                | Phase 5    |
 
 ## 3. Route Plan
 
 ### Phase 1 (this phase)
+
 - `/` — public landing/intro with CTAs into both dashboards
 - `/dashboard/student` — student dashboard
 - `/dashboard/parent` — parent dashboard
 
 ### Future
+
 - `/auth/login`, `/auth/signup`, `/auth/forgot-password` — Phase 2
 - `/test/new` — test creation wizard (board → grade → subject → chapter → topic → subtopic → types → difficulty → count → review) — Phase 3
 - `/test/:testId/take` — test-taking flow with timer, navigator, autosave — Phase 3
@@ -54,28 +56,30 @@ The sidebar trigger lives in the header so it remains visible in any state.
 
 Light theme. Tokens defined in `src/styles.css` using `oklch`.
 
-| Token | Value | Use |
-|---|---|---|
-| `--background` | `oklch(0.99 0.005 80)` | Warm off-white app bg |
-| `--foreground` | `oklch(0.2 0.02 250)` | Deep slate text |
-| `--primary` | `oklch(0.55 0.17 255)` | Calm indigo-blue accent |
-| `--primary-foreground` | `oklch(0.99 0.005 80)` | On primary |
-| `--card` | `oklch(1 0 0)` | Pure white surface |
-| `--muted` | `oklch(0.97 0.005 80)` | Subtle bg |
-| `--border` | `oklch(0.92 0.005 80)` | Hairline borders |
-| `--success` | `oklch(0.65 0.13 155)` | Improvement / positive |
-| `--warning` | `oklch(0.78 0.14 75)` | Attention |
-| `--destructive` | `oklch(0.6 0.18 25)` | Errors |
-| `--radius` | `1rem` | Cards `rounded-2xl`, inputs `rounded-md` |
+| Token                  | Value                  | Use                                      |
+| ---------------------- | ---------------------- | ---------------------------------------- |
+| `--background`         | `oklch(0.99 0.005 80)` | Warm off-white app bg                    |
+| `--foreground`         | `oklch(0.2 0.02 250)`  | Deep slate text                          |
+| `--primary`            | `oklch(0.55 0.17 255)` | Calm indigo-blue accent                  |
+| `--primary-foreground` | `oklch(0.99 0.005 80)` | On primary                               |
+| `--card`               | `oklch(1 0 0)`         | Pure white surface                       |
+| `--muted`              | `oklch(0.97 0.005 80)` | Subtle bg                                |
+| `--border`             | `oklch(0.92 0.005 80)` | Hairline borders                         |
+| `--success`            | `oklch(0.65 0.13 155)` | Improvement / positive                   |
+| `--warning`            | `oklch(0.78 0.14 75)`  | Attention                                |
+| `--destructive`        | `oklch(0.6 0.18 25)`   | Errors                                   |
+| `--radius`             | `1rem`                 | Cards `rounded-2xl`, inputs `rounded-md` |
 
 Shadows: `shadow-sm` default, `shadow-md` on hover. Typography: Inter system stack, `text-3xl` H1, `text-sm text-muted-foreground` captions, `tabular-nums` for stats. Charts: Recharts with restrained 3-color palette derived from `--primary`.
 
 ## 6. Component Inventory
 
 ### Shell
+
 `AppShell`, `Sidebar`, `Header`, `RoleBadge`, `PageContainer`, `SectionHeader`
 
 ### Dashboard widgets (`src/components/dashboard/`)
+
 `StatCard`, `ChartCard`, `InsightCard`, `WeakTopicChip`, `WeakTopicList`, `RecentTestsTable`, `ChildSwitcher`, `EmptyState`, `LoadingState`, `ErrorState`
 
 ### shadcn primitives (existing) — all `src/components/ui/*`
@@ -83,6 +87,7 @@ Shadows: `shadow-sm` default, `shadow-md` on hover. Typography: Inter system sta
 ## 7. Dashboard Widget Inventory
 
 ### Student
+
 - Welcome banner + "Create New Test" CTA
 - 4 StatCards: Tests Taken · Avg Score · Accuracy · Avg Time/Question
 - Score trend (line chart, last 10 tests)
@@ -93,6 +98,7 @@ Shadows: `shadow-sm` default, `shadow-md` on hover. Typography: Inter system sta
 - Motivational callout strip
 
 ### Parent
+
 - Welcome + ChildSwitcher
 - 4 StatCards: Tests Completed · Avg Score · Weak Topics · Improvement Trend
 - Recent performance (area chart)
@@ -116,15 +122,15 @@ When the API arrives, swap mock imports for queries — components stay unchange
 
 ## 9. Phased Roadmap
 
-| Phase | Scope |
-|---|---|
-| **1 ✅** | App shell, design system, homepage, student & parent dashboards (mock data) |
+| Phase    | Scope                                                                                                                                              |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1 ✅** | App shell, design system, homepage, student & parent dashboards (mock data)                                                                        |
 | **2 ✅** | Test creation wizard at `/test/new` (board → grade → subject → chapter → topic → subtopic → types → difficulty → count → review → mock generation) |
-| **3** | Test-taking flow + results page (per-question review) |
-| **4** | Auth: login/signup/forgot-password, JWT context, protected routes |
-| **5** | Analytics deep dive + parent child-detail pages |
-| **6** | Admin dashboard: question management, curriculum tree, user management |
-| **7** | Polish: notifications, settings, billing, onboarding |
+| **3**    | Test-taking flow + results page (per-question review)                                                                                              |
+| **4**    | Auth: login/signup/forgot-password, JWT context, protected routes                                                                                  |
+| **5**    | Analytics deep dive + parent child-detail pages                                                                                                    |
+| **6**    | Admin dashboard: question management, curriculum tree, user management                                                                             |
+| **7**    | Polish: notifications, settings, billing, onboarding                                                                                               |
 
 ## 10. Future Pages
 
@@ -170,6 +176,7 @@ docs/
 ```
 
 Rules:
+
 - Pages compose features; features compose widgets; widgets are dumb and presentational.
 - Mock data is imported from `@/lib/mock/*` — never inline in components.
 - All cross-cutting types live in `@/types`.

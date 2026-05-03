@@ -106,15 +106,15 @@ function AnalyticsView({ user }: { user: any }) {
     const days = rangeToDays(range);
     if (!days) return completed;
     const cutoff = Date.now() - days * 86400000;
-    return completed.filter(
-      (t) => new Date(t.date).getTime() >= cutoff,
-    );
+    return completed.filter((t) => new Date(t.date).getTime() >= cutoff);
   }, [range, allTests]);
 
   const stats = useMemo(() => {
     const n = filteredTests.length;
     const avgScore = n ? Math.round(filteredTests.reduce((s, t) => s + (t.score || 0), 0) / n) : 0;
-    const avgAccuracy = n ? Math.round(filteredTests.reduce((s, t) => s + (t.accuracy || 0), 0) / n) : 0;
+    const avgAccuracy = n
+      ? Math.round(filteredTests.reduce((s, t) => s + (t.accuracy || 0), 0) / n)
+      : 0;
     const totalMin = filteredTests.reduce((s, t) => s + (t.durationMinutes || 0), 0);
     const totalQ = filteredTests.reduce((s, t) => s + (t.questionCount || 0), 0);
     const avgTimePerQ = totalQ ? Math.round((totalMin * 60) / totalQ) : 0;
@@ -243,18 +243,33 @@ function OverviewSection({
     <>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Tests in range" value={stats.count} icon={Trophy} hint="Completed only" />
-        <StatCard label="Avg score" value={`${stats.avgScore}%`} icon={Target} hint="Across attempts" />
-        <StatCard label="Accuracy" value={`${stats.avgAccuracy}%`} icon={Activity} hint="Correct / answered" />
-        <StatCard label="Avg time / question" value={`${stats.avgTimePerQ}s`} icon={Timer} hint="Lower is faster" />
+        <StatCard
+          label="Avg score"
+          value={`${stats.avgScore}%`}
+          icon={Target}
+          hint="Across attempts"
+        />
+        <StatCard
+          label="Accuracy"
+          value={`${stats.avgAccuracy}%`}
+          icon={Activity}
+          hint="Correct / answered"
+        />
+        <StatCard
+          label="Avg time / question"
+          value={`${stats.avgTimePerQ}s`}
+          icon={Timer}
+          hint="Lower is faster"
+        />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <ChartCard title="Score trend" subtitle="Up to last 15 attempts in range" className="lg:col-span-2">
-          {trend.length === 0 ? (
-            <EmptyChart />
-          ) : (
-            <ScoreTrendChart data={trend} />
-          )}
+        <ChartCard
+          title="Score trend"
+          subtitle="Up to last 15 attempts in range"
+          className="lg:col-span-2"
+        >
+          {trend.length === 0 ? <EmptyChart /> : <ScoreTrendChart data={trend} />}
         </ChartCard>
         <ChartCard title="Subject performance" subtitle="Average score by subject">
           {subjectBreakdown.length === 0 ? (
@@ -268,12 +283,40 @@ function OverviewSection({
       <div className="mt-6">
         <ChartCard title="Performance by difficulty" subtitle="Average score per difficulty band">
           <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={difficultyBreakdown} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
+            <BarChart
+              data={difficultyBreakdown}
+              margin={{ top: 8, right: 16, bottom: 0, left: -16 }}
+            >
               <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="difficulty" stroke="var(--color-muted-foreground)" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-              <YAxis stroke="var(--color-muted-foreground)" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 100]} />
-              <Tooltip contentStyle={{ background: "var(--color-popover)", border: "1px solid var(--color-border)", borderRadius: "0.75rem", fontSize: "0.8rem" }} />
-              <Bar dataKey="avgScore" fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} barSize={48} name="Avg score" />
+              <XAxis
+                dataKey="difficulty"
+                stroke="var(--color-muted-foreground)"
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="var(--color-muted-foreground)"
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+                domain={[0, 100]}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--color-popover)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "0.75rem",
+                  fontSize: "0.8rem",
+                }}
+              />
+              <Bar
+                dataKey="avgScore"
+                fill="var(--color-chart-1)"
+                radius={[6, 6, 0, 0]}
+                barSize={48}
+                name="Avg score"
+              />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -287,7 +330,12 @@ function SubjectSection({
   subjectBreakdown,
 }: {
   tests: TestAttempt[];
-  subjectBreakdown: { subject: Subject; averageScore: number; accuracy?: number; testsTaken: number }[];
+  subjectBreakdown: {
+    subject: Subject;
+    averageScore: number;
+    accuracy?: number;
+    testsTaken: number;
+  }[];
 }) {
   const subjects = subjectBreakdown.map((s) => s.subject);
   const [active, setActive] = useState<Subject | null>(subjects[0] ?? null);
@@ -309,7 +357,11 @@ function SubjectSection({
 
   const subjectTrend: ScorePoint[] = subjectTests.slice(-12).map((t, i) => ({
     testIndex: i + 1,
-    label: new Date(t.date).toLocaleDateString("en-US", { month: "short", day: "2-digit", timeZone: "UTC" }),
+    label: new Date(t.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      timeZone: "UTC",
+    }),
     score: t.score,
     accuracy: t.accuracy,
   }));
@@ -338,7 +390,10 @@ function SubjectSection({
         {subjectBreakdown.map((s) => {
           const isActive = s.subject === currentSubject;
           return (
-            <Card key={s.subject} className={cn("transition-colors", isActive && "border-primary/40")}>
+            <Card
+              key={s.subject}
+              className={cn("transition-colors", isActive && "border-primary/40")}
+            >
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -366,20 +421,52 @@ function SubjectSection({
       </div>
 
       <div className="mt-6">
-        <ChartCard title="Recent attempts" subtitle={`Last ${Math.min(subjectTests.length, 8)} in this subject`}>
+        <ChartCard
+          title="Recent attempts"
+          subtitle={`Last ${Math.min(subjectTests.length, 8)} in this subject`}
+        >
           <ResponsiveContainer width="100%" height={220}>
             <LineChart
               data={subjectTests.slice(-8).map((t) => ({
-                label: new Date(t.date).toLocaleDateString("en-US", { month: "short", day: "2-digit", timeZone: "UTC" }),
+                label: new Date(t.date).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "2-digit",
+                  timeZone: "UTC",
+                }),
                 score: t.score,
               }))}
               margin={{ top: 10, right: 8, bottom: 0, left: -16 }}
             >
               <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="label" stroke="var(--color-muted-foreground)" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-              <YAxis domain={[0, 100]} stroke="var(--color-muted-foreground)" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-              <Tooltip contentStyle={{ background: "var(--color-popover)", border: "1px solid var(--color-border)", borderRadius: "0.75rem", fontSize: "0.8rem" }} />
-              <Line type="monotone" dataKey="score" stroke="var(--color-chart-2)" strokeWidth={2.5} dot={{ r: 3 }} />
+              <XAxis
+                dataKey="label"
+                stroke="var(--color-muted-foreground)"
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                domain={[0, 100]}
+                stroke="var(--color-muted-foreground)"
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--color-popover)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "0.75rem",
+                  fontSize: "0.8rem",
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke="var(--color-chart-2)"
+                strokeWidth={2.5}
+                dot={{ r: 3 }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -402,7 +489,8 @@ function TopicSection({
 
   const filteredStrong = active === "all" ? strong : strong.filter((s) => s.subject === active);
   const filteredWeak = active === "all" ? weak : weak.filter((s) => s.subject === active);
-  const filteredSub = active === "all" ? weakSubtopics : weakSubtopics.filter((s) => s.subject === active);
+  const filteredSub =
+    active === "all" ? weakSubtopics : weakSubtopics.filter((s) => s.subject === active);
 
   return (
     <>
@@ -412,7 +500,9 @@ function TopicSection({
           onClick={() => setActive("all")}
           className={cn(
             "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-            active === "all" ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-muted",
+            active === "all"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "bg-background hover:bg-muted",
           )}
         >
           All subjects
@@ -424,7 +514,9 @@ function TopicSection({
             onClick={() => setActive(s)}
             className={cn(
               "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-              active === s ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-muted",
+              active === s
+                ? "border-primary bg-primary text-primary-foreground"
+                : "bg-background hover:bg-muted",
             )}
           >
             {s}
@@ -472,7 +564,9 @@ function TopicSection({
                       <span className="w-12 text-right text-sm font-semibold tabular-nums text-destructive">
                         {s.accuracy}%
                       </span>
-                      <Badge variant="outline" className="font-normal">{s.attempts} attempts</Badge>
+                      <Badge variant="outline" className="font-normal">
+                        {s.attempts} attempts
+                      </Badge>
                     </div>
                   </li>
                 ))}
@@ -505,7 +599,9 @@ function TopicListCard({
           <span
             className={cn(
               "flex h-8 w-8 items-center justify-center rounded-lg",
-              tone === "success" ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive",
+              tone === "success"
+                ? "bg-success/10 text-success"
+                : "bg-destructive/10 text-destructive",
             )}
           >
             <Icon className="h-4 w-4" />

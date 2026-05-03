@@ -1,5 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { studentService, testService, parentService, teacherService, schoolService, assignmentService, curriculumService } from "../../services/api";
+import {
+  studentService,
+  testService,
+  parentService,
+  teacherService,
+  schoolService,
+  assignmentService,
+  curriculumService,
+} from "../../services/api";
 import { StudentDashboardData, ParentDashboardData, TestAttempt, User } from "@/types";
 import { authService } from "../../services/api";
 
@@ -24,7 +32,7 @@ export function useTests(studentId: string) {
     queryKey: ["tests", studentId],
     queryFn: async () => {
       const res = await studentService.getTests(studentId);
-      return Array.isArray(res) ? res : (res.data || []);
+      return Array.isArray(res) ? res : res.data || [];
     },
     enabled: !!studentId,
   });
@@ -115,7 +123,7 @@ export function useSchoolTeachers(schoolId: string) {
     queryKey: ["schoolTeachers", schoolId],
     queryFn: async () => {
       const res = await schoolService.listTeachers(schoolId);
-      return Array.isArray(res) ? res : (res.data || []);
+      return Array.isArray(res) ? res : res.data || [];
     },
     enabled: !!schoolId,
   });
@@ -150,7 +158,7 @@ export function useAssignments(params: any = {}) {
     queryKey: ["assignments", params],
     queryFn: async () => {
       const res = await assignmentService.list(params);
-      return Array.isArray(res) ? res : (res.data || []);
+      return Array.isArray(res) ? res : res.data || [];
     },
   });
 }

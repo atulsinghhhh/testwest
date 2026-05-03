@@ -1,12 +1,4 @@
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { SubjectPerformance } from "@/types";
 
 interface Props {
@@ -16,11 +8,7 @@ interface Props {
 export function SubjectPerformanceChart({ data }: Props) {
   return (
     <ResponsiveContainer width="100%" height={260}>
-      <BarChart
-        data={data}
-        layout="vertical"
-        margin={{ top: 8, right: 16, bottom: 0, left: 8 }}
-      >
+      <BarChart data={data} layout="vertical" margin={{ top: 8, right: 16, bottom: 0, left: 8 }}>
         <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" horizontal={false} />
         <XAxis
           type="number"

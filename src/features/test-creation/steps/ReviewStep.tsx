@@ -56,10 +56,7 @@ export function ReviewStep({ state, onEdit, onToggleAI }: Props) {
         <CardContent className="p-0">
           <ul className="divide-y">
             {rows.map((r) => (
-              <li
-                key={r.label}
-                className="flex items-center justify-between gap-4 px-5 py-3.5"
-              >
+              <li key={r.label} className="flex items-center justify-between gap-4 px-5 py-3.5">
                 <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   {r.label}
                 </span>
@@ -91,11 +88,7 @@ export function ReviewStep({ state, onEdit, onToggleAI }: Props) {
                 </p>
               </div>
             </div>
-            <Switch
-              id="ai-toggle"
-              checked={state.useAI}
-              onCheckedChange={onToggleAI}
-            />
+            <Switch id="ai-toggle" checked={state.useAI} onCheckedChange={onToggleAI} />
           </div>
         </CardContent>
       </Card>

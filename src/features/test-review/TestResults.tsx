@@ -14,15 +14,7 @@ import {
   Trophy,
   Loader2,
 } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,9 +44,13 @@ export function TestResults({ testId }: Props) {
     if (!test) return null;
     const correct = test.questions.filter((q: any) => q.isCorrect === true).length;
     const incorrect = test.questions.filter((q: any) => q.isCorrect === false).length;
-    const pending = test.questions.filter((q: any) => q.isCorrect === null || q.isCorrect === undefined).length;
-    const answered = test.questions.filter((q: any) => q.givenAnswer !== null && q.givenAnswer !== undefined).length;
-    
+    const pending = test.questions.filter(
+      (q: any) => q.isCorrect === null || q.isCorrect === undefined,
+    ).length;
+    const answered = test.questions.filter(
+      (q: any) => q.givenAnswer !== null && q.givenAnswer !== undefined,
+    ).length;
+
     return {
       score: test.score ?? 0,
       accuracy: test.accuracy ?? 0,
@@ -64,7 +60,10 @@ export function TestResults({ testId }: Props) {
       pending,
       answered,
       total: test.questions.length,
-      avgSec: test.questions.length > 0 ? Math.round((test.durationSeconds ?? 0) / test.questions.length) : 0
+      avgSec:
+        test.questions.length > 0
+          ? Math.round((test.durationSeconds ?? 0) / test.questions.length)
+          : 0,
     };
   }, [test]);
 
@@ -118,8 +117,8 @@ export function TestResults({ testId }: Props) {
               {test.subject} · {test.topic}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Grade {test.grade} · {test.board} · {test.difficulty} ·{" "}
-              {test.questions.length} questions
+              Grade {test.grade} · {test.board} · {test.difficulty} · {test.questions.length}{" "}
+              questions
             </p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <Badge variant="secondary" className="font-normal">
@@ -153,10 +152,30 @@ export function TestResults({ testId }: Props) {
       </Card>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Score" value={`${stats.score}%`} icon={Trophy} hint={`${stats.correct}/${stats.total} correct`} />
-        <StatCard label="Accuracy" value={`${stats.accuracy}%`} icon={Target} hint="Correct / answered" />
-        <StatCard label="Time taken" value={formatDuration(stats.durationSec)} icon={Clock} hint="Total time" />
-        <StatCard label="Avg / question" value={`${stats.avgSec}s`} icon={TimerIcon} hint="Time per question" />
+        <StatCard
+          label="Score"
+          value={`${stats.score}%`}
+          icon={Trophy}
+          hint={`${stats.correct}/${stats.total} correct`}
+        />
+        <StatCard
+          label="Accuracy"
+          value={`${stats.accuracy}%`}
+          icon={Target}
+          hint="Correct / answered"
+        />
+        <StatCard
+          label="Time taken"
+          value={formatDuration(stats.durationSec)}
+          icon={Clock}
+          hint="Total time"
+        />
+        <StatCard
+          label="Avg / question"
+          value={`${stats.avgSec}s`}
+          icon={TimerIcon}
+          hint="Time per question"
+        />
       </div>
 
       {perTypeData.length > 0 && (
@@ -164,9 +183,26 @@ export function TestResults({ testId }: Props) {
           <ChartCard title="Performance by question type" subtitle="Average score across each type">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={perTypeData} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
-                <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="type" stroke="var(--color-muted-foreground)" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--color-muted-foreground)" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} />
+                <CartesianGrid
+                  stroke="var(--color-border)"
+                  strokeDasharray="3 3"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="type"
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  domain={[0, 100]}
+                  ticks={[0, 25, 50, 75, 100]}
+                />
                 <Tooltip
                   cursor={{ fill: "var(--color-muted)" }}
                   contentStyle={{
@@ -176,7 +212,12 @@ export function TestResults({ testId }: Props) {
                     fontSize: "0.8rem",
                   }}
                 />
-                <Bar dataKey="score" fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} barSize={36} />
+                <Bar
+                  dataKey="score"
+                  fill="var(--color-chart-1)"
+                  radius={[6, 6, 0, 0]}
+                  barSize={36}
+                />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -209,9 +250,7 @@ export function TestResults({ testId }: Props) {
                       <Badge variant="secondary" className="font-normal">
                         {q.type}
                       </Badge>
-                      <span className="line-clamp-1 flex-1 text-sm text-foreground">
-                        {q.body}
-                      </span>
+                      <span className="line-clamp-1 flex-1 text-sm text-foreground">{q.body}</span>
                       <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-180" />
                     </div>
                   </AccordionTrigger>
@@ -233,11 +272,22 @@ function ScoreRing({ score }: { score: number }) {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
   const colorVar =
-    score >= 85 ? "var(--color-success)" : score >= 60 ? "var(--color-chart-1)" : "var(--color-destructive)";
+    score >= 85
+      ? "var(--color-success)"
+      : score >= 60
+        ? "var(--color-chart-1)"
+        : "var(--color-destructive)";
   return (
     <div className="relative mx-auto h-28 w-28 shrink-0 md:mx-0">
       <svg className="h-full w-full -rotate-90" viewBox="0 0 110 110">
-        <circle cx="55" cy="55" r={radius} fill="none" stroke="var(--color-border)" strokeWidth="9" />
+        <circle
+          cx="55"
+          cy="55"
+          r={radius}
+          fill="none"
+          stroke="var(--color-border)"
+          strokeWidth="9"
+        />
         <circle
           cx="55"
           cy="55"
@@ -252,7 +302,9 @@ function ScoreRing({ score }: { score: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-3xl font-semibold tabular-nums leading-none">{score}</span>
-        <span className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">Score</span>
+        <span className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+          Score
+        </span>
       </div>
     </div>
   );
@@ -262,7 +314,12 @@ function StatusDot({ isCorrect }: { isCorrect: boolean | null | undefined }) {
   if (isCorrect === true)
     return <CheckCircle2 className="h-4 w-4 shrink-0 text-success" aria-label="Correct" />;
   if (isCorrect === false)
-    return <Circle className="h-4 w-4 shrink-0 fill-destructive text-destructive" aria-label="Incorrect" />;
+    return (
+      <Circle
+        className="h-4 w-4 shrink-0 fill-destructive text-destructive"
+        aria-label="Incorrect"
+      />
+    );
   return <CircleSlash2 className="h-4 w-4 shrink-0 text-muted-foreground" aria-label="Pending" />;
 }
 
@@ -345,11 +402,15 @@ function AnswerComparison({ question }: { question: any }) {
       </div>
     );
   }
-  
+
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <AnswerBlock label="Your answer" value={String(givenAnswer || "—")} variant="user" />
-      <AnswerBlock label={type === "Short answer" ? "Model answer" : "Accepted answer"} value={String(answer)} variant="correct" />
+      <AnswerBlock
+        label={type === "Short answer" ? "Model answer" : "Accepted answer"}
+        value={String(answer)}
+        variant="correct"
+      />
     </div>
   );
 }

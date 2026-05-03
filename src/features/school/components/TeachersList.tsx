@@ -6,7 +6,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
 function initials(name: string) {
-  return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
 interface TeachersListProps {
@@ -15,11 +20,11 @@ interface TeachersListProps {
 
 export function TeachersList({ teachers = [] }: TeachersListProps) {
   const [q, setQ] = useState("");
-  
+
   // Format backend data to match UI expectations if necessary
-  const formattedTeachers = teachers.map(t => ({
+  const formattedTeachers = teachers.map((t) => ({
     id: t._id || t.id,
-    name: t.user ? `${t.user.firstName} ${t.user.lastName}` : (t.name || "Unknown Teacher"),
+    name: t.user ? `${t.user.firstName} ${t.user.lastName}` : t.name || "Unknown Teacher",
     email: t.user?.email || t.email || "",
     subjects: t.subjects || [],
     classIds: t.classIds || [],
@@ -67,12 +72,17 @@ export function TeachersList({ teachers = [] }: TeachersListProps) {
 
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {t.subjects.map((s: string) => (
-                  <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>
+                  <Badge key={s} variant="secondary" className="text-[10px]">
+                    {s}
+                  </Badge>
                 ))}
               </div>
 
               <div className="mt-3 flex items-center justify-between border-t pt-3 text-xs text-muted-foreground">
-                <span>Classes: <span className="font-medium text-foreground">{t.classIds.join(", ")}</span></span>
+                <span>
+                  Classes:{" "}
+                  <span className="font-medium text-foreground">{t.classIds.join(", ")}</span>
+                </span>
                 <span className="flex items-center gap-1">
                   <UsersIcon className="h-3 w-3" />
                   {t.studentsCount}

@@ -117,7 +117,9 @@ function Pricing() {
           </div>
           <div className="leading-tight">
             <p className="text-sm font-semibold tracking-tight">TestWest</p>
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">K-12 Assessments</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              K-12 Assessments
+            </p>
           </div>
         </Link>
         <Button asChild variant="ghost" size="sm">
@@ -137,11 +139,16 @@ function Pricing() {
             Plans that grow with the learner
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
-            Solo learners can choose monthly or yearly billing. Schools partner with us for the full year so every student in the institution is covered.
+            Solo learners can choose monthly or yearly billing. Schools partner with us for the full
+            year so every student in the institution is covered.
           </p>
         </div>
 
-        <Tabs value={tab} onValueChange={(v) => setTab(v as "solo" | "school")} className="mt-8 flex flex-col items-center">
+        <Tabs
+          value={tab}
+          onValueChange={(v) => setTab(v as "solo" | "school")}
+          className="mt-8 flex flex-col items-center"
+        >
           <TabsList>
             <TabsTrigger value="solo">For solo learners</TabsTrigger>
             <TabsTrigger value="school">For schools</TabsTrigger>
@@ -161,7 +168,10 @@ function Pricing() {
                 onClick={() => setCycle("yearly")}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${cycle === "yearly" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
               >
-                Yearly <span className="ml-1 rounded-full bg-success/20 px-1.5 py-0.5 text-[10px] text-success">Save 30%</span>
+                Yearly{" "}
+                <span className="ml-1 rounded-full bg-success/20 px-1.5 py-0.5 text-[10px] text-success">
+                  Save 30%
+                </span>
               </button>
             </div>
           </div>
@@ -187,7 +197,9 @@ function Pricing() {
                         {price === 0 ? "Free" : `₹${price.toLocaleString("en-IN")}`}
                       </span>
                       {price > 0 && (
-                        <span className="text-sm text-muted-foreground">/{cycle === "monthly" ? "mo" : "yr"}</span>
+                        <span className="text-sm text-muted-foreground">
+                          /{cycle === "monthly" ? "mo" : "yr"}
+                        </span>
                       )}
                     </div>
                     <ul className="mt-5 space-y-2.5">
@@ -227,7 +239,9 @@ function Pricing() {
                   <h3 className="text-lg font-semibold">{p.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-3xl font-semibold tabular-nums">₹{p.yearly.toLocaleString("en-IN")}</span>
+                    <span className="text-3xl font-semibold tabular-nums">
+                      ₹{p.yearly.toLocaleString("en-IN")}
+                    </span>
                     <span className="text-sm text-muted-foreground">/student/yr</span>
                   </div>
                   <ul className="mt-5 space-y-2.5">
@@ -256,7 +270,8 @@ function Pricing() {
         )}
 
         <p className="mt-10 text-center text-xs text-muted-foreground">
-          Schools subscribe yearly so every student in the institution gets continuous access. Solo learners can pick monthly or yearly anytime.
+          Schools subscribe yearly so every student in the institution gets continuous access. Solo
+          learners can pick monthly or yearly anytime.
         </p>
       </section>
     </div>

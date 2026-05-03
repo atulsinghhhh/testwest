@@ -35,7 +35,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function SubjectStep({ board, grade, value, onChange }: Props) {
   const { data: subjectsResult, isLoading } = useSubjects(board, grade);
-  
+
   // Merge API results with our global list for maximum flexibility, especially for AI generation
   const subjects = useMemo(() => {
     const fromApi = subjectsResult || [];

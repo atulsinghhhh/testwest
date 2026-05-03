@@ -37,7 +37,10 @@ export function AddTeacherForm({ schoolId, onSuccess, onCancel }: AddTeacherForm
         },
         profile: {
           schoolId,
-          subjects: subjects.split(",").map(s => s.trim()).filter(Boolean),
+          subjects: subjects
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
       });
       onSuccess();
@@ -60,22 +63,22 @@ export function AddTeacherForm({ schoolId, onSuccess, onCancel }: AddTeacherForm
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="firstName">First name</Label>
-          <Input 
-            id="firstName" 
-            value={firstName} 
-            onChange={e => setFirstName(e.target.value)} 
-            placeholder="John" 
-            required 
+          <Input
+            id="firstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="John"
+            required
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="lastName">Last name</Label>
-          <Input 
-            id="lastName" 
-            value={lastName} 
-            onChange={e => setLastName(e.target.value)} 
-            placeholder="Doe" 
-            required 
+          <Input
+            id="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Doe"
+            required
           />
         </div>
       </div>
@@ -84,27 +87,27 @@ export function AddTeacherForm({ schoolId, onSuccess, onCancel }: AddTeacherForm
         <Label htmlFor="email">Email</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input 
-            id="email" 
-            type="email" 
-            value={email} 
-            onChange={e => setEmail(e.target.value)} 
-            placeholder="teacher@school.com" 
-            className="pl-10" 
-            required 
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="teacher@school.com"
+            className="pl-10"
+            required
           />
         </div>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">Initial Password</Label>
-        <Input 
-          id="password" 
-          type="password" 
-          value={password} 
-          onChange={e => setPassword(e.target.value)} 
-          placeholder="••••••••" 
-          required 
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+          required
         />
       </div>
 
@@ -112,21 +115,21 @@ export function AddTeacherForm({ schoolId, onSuccess, onCancel }: AddTeacherForm
         <Label htmlFor="subjects">Subjects (comma separated)</Label>
         <div className="relative">
           <BookOpen className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input 
-            id="subjects" 
-            value={subjects} 
-            onChange={e => setSubjects(e.target.value)} 
-            placeholder="Mathematics, Physics" 
-            className="pl-10" 
+          <Input
+            id="subjects"
+            value={subjects}
+            onChange={(e) => setSubjects(e.target.value)}
+            placeholder="Mathematics, Physics"
+            className="pl-10"
           />
         </div>
       </div>
 
       <div className="flex gap-3 pt-2">
-        <Button 
-          type="button" 
-          variant="outline" 
-          className="flex-1" 
+        <Button
+          type="button"
+          variant="outline"
+          className="flex-1"
           onClick={onCancel}
           disabled={loading}
         >

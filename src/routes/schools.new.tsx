@@ -9,7 +9,8 @@ export const Route = createFileRoute("/schools/new")({
       { title: "Register New School — TestWest" },
       {
         name: "description",
-        content: "Onboard your institution to TestWest Insights and start tracking collective performance.",
+        content:
+          "Onboard your institution to TestWest Insights and start tracking collective performance.",
       },
     ],
   }),
@@ -21,8 +22,8 @@ function CreateSchoolNewPage() {
   const userName = user ? `${user.firstName} ${user.lastName}` : "Admin";
 
   return (
-    <AppShell 
-      title="Register School" 
+    <AppShell
+      title="Register School"
       subtitle="Institutional Onboarding"
       role="SCHOOL"
       userName={userName}

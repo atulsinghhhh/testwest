@@ -10,7 +10,13 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export function EmptyState({ title, description, action, icon: Icon = Inbox, className }: EmptyStateProps) {
+export function EmptyState({
+  title,
+  description,
+  action,
+  icon: Icon = Inbox,
+  className,
+}: EmptyStateProps) {
   return (
     <Card className={cn(className)}>
       <CardContent className="flex flex-col items-center justify-center px-6 py-12 text-center">

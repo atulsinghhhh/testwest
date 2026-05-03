@@ -1,4 +1,5 @@
-export const API_URL = import.meta.env.VITE_API_URL || import.meta.env.REACT_APP_API_URL || "http://localhost:8000";
+export const API_URL =
+  import.meta.env.VITE_API_URL || import.meta.env.REACT_APP_API_URL || "http://localhost:8000";
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem("testwest_token");
@@ -21,7 +22,7 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     const errorData = await response.json().catch(() => ({}));
     let errorMessage = errorData.error || "An error occurred with the API.";
     if (errorData.details && Array.isArray(errorData.details)) {
-      errorMessage = errorData.details.map((d: any) => `${d.path}: ${d.message}`).join(', ');
+      errorMessage = errorData.details.map((d: any) => `${d.path}: ${d.message}`).join(", ");
     }
     throw new Error(errorMessage);
   }
@@ -56,7 +57,7 @@ export const authService = {
   logout: () => {
     localStorage.removeItem("testwest_token");
     window.location.href = "/login";
-  }
+  },
 };
 
 export const userService = {
@@ -66,7 +67,8 @@ export const userService = {
 export const assignmentService = {
   list: (params = {}) => fetchApi(`/assignments?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/assignments", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/assignments/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    fetchApi(`/assignments/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => fetchApi(`/assignments/${id}`, { method: "DELETE" }),
 };
 
@@ -77,25 +79,33 @@ export const curriculumService = {
   getChapters: (params = {}) => fetchApi(`/curriculum/chapters?${new URLSearchParams(params)}`),
   getTopics: (params = {}) => fetchApi(`/curriculum/topics?${new URLSearchParams(params)}`),
   getSubtopics: (params = {}) => fetchApi(`/curriculum/subtopics?${new URLSearchParams(params)}`),
-  getQuestionCount: (params = {}) => fetchApi(`/curriculum/questions/count?${new URLSearchParams(params)}`),
+  getQuestionCount: (params = {}) =>
+    fetchApi(`/curriculum/questions/count?${new URLSearchParams(params)}`),
 };
 
 export const parentService = {
   list: (params = {}) => fetchApi(`/parents?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/parents", { method: "POST", body: JSON.stringify(data) }),
   get: (id: string) => fetchApi(`/parents/${id}`),
-  update: (id: string, data: any) => fetchApi(`/parents/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    fetchApi(`/parents/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => fetchApi(`/parents/${id}`, { method: "DELETE" }),
   getChildren: (id: string) => fetchApi(`/parents/${id}/children`),
-  getChildDashboard: (id: string, childId: string) => fetchApi(`/parents/${id}/children/${childId}/dashboard`),
-  linkChild: (id: string, studentId: string) => fetchApi(`/parents/${id}/link-student`, { method: "POST", body: JSON.stringify({ studentId }) }),
+  getChildDashboard: (id: string, childId: string) =>
+    fetchApi(`/parents/${id}/children/${childId}/dashboard`),
+  linkChild: (id: string, studentId: string) =>
+    fetchApi(`/parents/${id}/link-student`, {
+      method: "POST",
+      body: JSON.stringify({ studentId }),
+    }),
 };
 
 export const questionService = {
   list: (params = {}) => fetchApi(`/questions?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/questions", { method: "POST", body: JSON.stringify(data) }),
   get: (id: string) => fetchApi(`/questions/${id}`),
-  update: (id: string, data: any) => fetchApi(`/questions/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    fetchApi(`/questions/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => fetchApi(`/questions/${id}`, { method: "DELETE" }),
 };
 
@@ -103,14 +113,19 @@ export const schoolService = {
   list: (params = {}) => fetchApi(`/schools?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/schools", { method: "POST", body: JSON.stringify(data) }),
   get: (id: string) => fetchApi(`/schools/${id}`),
-  update: (id: string, data: any) => fetchApi(`/schools/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    fetchApi(`/schools/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => fetchApi(`/schools/${id}`, { method: "DELETE" }),
   getStats: (id: string) => fetchApi(`/schools/${id}/stats`),
   listClasses: (id: string) => fetchApi(`/schools/${id}/classes`),
-  createClass: (id: string, data: any) => fetchApi(`/schools/${id}/classes`, { method: "POST", body: JSON.stringify(data) }),
-  updateClass: (id: string, classId: string, data: any) => fetchApi(`/schools/${id}/classes/${classId}`, { method: "PATCH", body: JSON.stringify(data) }),
-  deleteClass: (id: string, classId: string) => fetchApi(`/schools/${id}/classes/${classId}`, { method: "DELETE" }),
-  getClassStudents: (id: string, classId: string) => fetchApi(`/schools/${id}/classes/${classId}/students`),
+  createClass: (id: string, data: any) =>
+    fetchApi(`/schools/${id}/classes`, { method: "POST", body: JSON.stringify(data) }),
+  updateClass: (id: string, classId: string, data: any) =>
+    fetchApi(`/schools/${id}/classes/${classId}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteClass: (id: string, classId: string) =>
+    fetchApi(`/schools/${id}/classes/${classId}`, { method: "DELETE" }),
+  getClassStudents: (id: string, classId: string) =>
+    fetchApi(`/schools/${id}/classes/${classId}/students`),
   listTeachers: (id: string) => fetchApi(`/schools/${id}/teachers`),
 };
 
@@ -118,9 +133,11 @@ export const studentService = {
   list: (params = {}) => fetchApi(`/students?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/students", { method: "POST", body: JSON.stringify(data) }),
   get: (id: string) => fetchApi(`/students/${id}`),
-  update: (id: string, data: any) => fetchApi(`/students/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    fetchApi(`/students/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => fetchApi(`/students/${id}`, { method: "DELETE" }),
-  getTests: (id: string, params = {}) => fetchApi(`/students/${id}/tests?${new URLSearchParams(params)}`),
+  getTests: (id: string, params = {}) =>
+    fetchApi(`/students/${id}/tests?${new URLSearchParams(params)}`),
   getDashboard: (id: string) => fetchApi(`/students/${id}/dashboard`),
 };
 
@@ -128,7 +145,8 @@ export const teacherService = {
   list: (params = {}) => fetchApi(`/teachers?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/teachers", { method: "POST", body: JSON.stringify(data) }),
   get: (id: string) => fetchApi(`/teachers/${id}`),
-  update: (id: string, data: any) => fetchApi(`/teachers/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    fetchApi(`/teachers/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => fetchApi(`/teachers/${id}`, { method: "DELETE" }),
   getStats: (id: string) => fetchApi(`/teachers/${id}/stats`),
   getStudents: (id: string) => fetchApi(`/teachers/${id}/students`),
@@ -140,7 +158,9 @@ export const testService = {
   list: (params = {}) => fetchApi(`/tests?${new URLSearchParams(params)}`),
   create: (data: any) => fetchApi("/tests", { method: "POST", body: JSON.stringify(data) }),
   get: (id: string) => fetchApi(`/tests/${id}`),
-  autosaveResponse: (id: string, qid: string, data: any) => fetchApi(`/tests/${id}/responses/${qid}`, { method: "PATCH", body: JSON.stringify(data) }),
+  autosaveResponse: (id: string, qid: string, data: any) =>
+    fetchApi(`/tests/${id}/responses/${qid}`, { method: "PATCH", body: JSON.stringify(data) }),
   submit: (id: string) => fetchApi(`/tests/${id}/submit`, { method: "POST" }),
-  generateAI: (data: any) => fetchApi("/tests/generate-ai", { method: "POST", body: JSON.stringify(data) }),
+  generateAI: (data: any) =>
+    fetchApi("/tests/generate-ai", { method: "POST", body: JSON.stringify(data) }),
 };

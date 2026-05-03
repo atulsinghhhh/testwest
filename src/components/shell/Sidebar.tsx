@@ -63,11 +63,11 @@ export function AppSidebar() {
   const dashboardsList = useMemo(() => {
     if (!user) return [];
     const role = user.role;
-    if (role === "STUDENT") return dashboards.filter(d => d.title === "Student");
-    if (role === "SOLO") return dashboards.filter(d => d.title === "Solo learner");
-    if (role === "PARENT") return dashboards.filter(d => d.title === "Parent");
-    if (role === "TEACHER") return dashboards.filter(d => d.title === "Teacher");
-    if (role === "SCHOOL") return dashboards.filter(d => d.title === "School");
+    if (role === "STUDENT") return dashboards.filter((d) => d.title === "Student");
+    if (role === "SOLO") return dashboards.filter((d) => d.title === "Solo learner");
+    if (role === "PARENT") return dashboards.filter((d) => d.title === "Parent");
+    if (role === "TEACHER") return dashboards.filter((d) => d.title === "Teacher");
+    if (role === "SCHOOL") return dashboards.filter((d) => d.title === "School");
     return dashboards;
   }, [user]);
 
@@ -102,11 +102,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {dashboardsList.map((item) => (
                 <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                     <Link to={item.url}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -119,66 +115,58 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {showLearning && (
-        <SidebarGroup>
-          <SidebarGroupLabel>Learning</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {learning.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  {item.disabled ? (
-                    <SidebarMenuButton
-                      tooltip={`${item.title} — coming soon`}
-                      className="cursor-not-allowed opacity-50"
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                      {!collapsed && (
-                        <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                          Soon
-                        </span>
-                      )}
-                    </SidebarMenuButton>
-                  ) : (
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive(item.url)}
-                      tooltip={item.title}
-                    >
+          <SidebarGroup>
+            <SidebarGroupLabel>Learning</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {learning.map((item) => (
+                  <SidebarMenuItem key={item.url}>
+                    {item.disabled ? (
+                      <SidebarMenuButton
+                        tooltip={`${item.title} — coming soon`}
+                        className="cursor-not-allowed opacity-50"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                        {!collapsed && (
+                          <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Soon
+                          </span>
+                        )}
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
+                        <Link to={item.url}>
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {showAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {administration.map((item) => (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                       <Link to={item.url}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        )}
-
-        {showAdmin && (
-        <SidebarGroup>
-          <SidebarGroupLabel>Administration</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {administration.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <Link to={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         )}
       </SidebarContent>
 

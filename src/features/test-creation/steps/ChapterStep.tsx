@@ -11,11 +11,16 @@ interface Props {
   onChange: (c: string) => void;
 }
 
-const SAMPLE_CHAPTERS = ["Fundamentals", "Advanced Concepts", "Practical Applications", "Review & Practice"];
+const SAMPLE_CHAPTERS = [
+  "Fundamentals",
+  "Advanced Concepts",
+  "Practical Applications",
+  "Review & Practice",
+];
 
 export function ChapterStep({ board, grade, subject, value, onChange }: Props) {
   const { data: chaptersResult, isLoading } = useChapters(board, grade, subject);
-  const chapters = (chaptersResult && chaptersResult.length > 0) ? chaptersResult : SAMPLE_CHAPTERS;
+  const chapters = chaptersResult && chaptersResult.length > 0 ? chaptersResult : SAMPLE_CHAPTERS;
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

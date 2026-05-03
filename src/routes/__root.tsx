@@ -30,17 +30,37 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "TestWest" },
-      { name: "description", content: "TestWest Insights is a K-12 assessment platform for students, parents, and teachers." },
+      {
+        name: "description",
+        content:
+          "TestWest Insights is a K-12 assessment platform for students, parents, and teachers.",
+      },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "TestWest" },
-      { property: "og:description", content: "TestWest Insights is a K-12 assessment platform for students, parents, and teachers." },
+      {
+        property: "og:description",
+        content:
+          "TestWest Insights is a K-12 assessment platform for students, parents, and teachers.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "TestWest" },
-      { name: "twitter:description", content: "TestWest Insights is a K-12 assessment platform for students, parents, and teachers." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8c03a735-fac7-4f76-9ce2-3a598e924a9b/id-preview-5f6ae0ba--bd788ce3-3b17-46be-9fcb-ef44679a8b99.lovable.app-1776680233424.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8c03a735-fac7-4f76-9ce2-3a598e924a9b/id-preview-5f6ae0ba--bd788ce3-3b17-46be-9fcb-ef44679a8b99.lovable.app-1776680233424.png" },
+      {
+        name: "twitter:description",
+        content:
+          "TestWest Insights is a K-12 assessment platform for students, parents, and teachers.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8c03a735-fac7-4f76-9ce2-3a598e924a9b/id-preview-5f6ae0ba--bd788ce3-3b17-46be-9fcb-ef44679a8b99.lovable.app-1776680233424.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8c03a735-fac7-4f76-9ce2-3a598e924a9b/id-preview-5f6ae0ba--bd788ce3-3b17-46be-9fcb-ef44679a8b99.lovable.app-1776680233424.png",
+      },
     ],
     links: [
       {

@@ -10,7 +10,13 @@ interface WeakTopicListProps {
   className?: string;
 }
 
-export function WeakTopicList({ title, subtitle, items, variant = "topic", className }: WeakTopicListProps) {
+export function WeakTopicList({
+  title,
+  subtitle,
+  items,
+  variant = "topic",
+  className,
+}: WeakTopicListProps) {
   return (
     <Card className={cn("h-full", className)}>
       <CardHeader className="p-5 pb-2">
@@ -20,10 +26,7 @@ export function WeakTopicList({ title, subtitle, items, variant = "topic", class
       <CardContent className="p-5 pt-2">
         <ul className="space-y-2.5">
           {items.map((item) => {
-            const label =
-              variant === "subtopic" && item.subtopic
-                ? item.subtopic
-                : item.topic;
+            const label = variant === "subtopic" && item.subtopic ? item.subtopic : item.topic;
             const meta = `${item.subject} · ${item.chapter}`;
             return (
               <li

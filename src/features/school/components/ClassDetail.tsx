@@ -17,11 +17,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { SubjectPerformanceChart } from "@/components/dashboard/SubjectPerformanceChart";
 import { SubjectRanking } from "./SubjectRanking";
-import {
-  useUser,
-  useSchoolClasses,
-  useClassStudents,
-} from "@/lib/api/hooks";
+import { useUser, useSchoolClasses, useClassStudents } from "@/lib/api/hooks";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
@@ -36,13 +32,16 @@ export function ClassDetail({ classId, onBack }: Props) {
 
   const { data: user } = useUser();
   const schoolId = user?.schoolId || "";
-  
+
   const { data: classesResult, isLoading: classesLoading } = useSchoolClasses(schoolId);
   const { data: studentsRaw, isLoading: studentsLoading } = useClassStudents(schoolId, classId);
 
   const classes = classesResult?.data || [];
-  const cls = useMemo(() => classes.find((c: any) => (c.id === classId || c._id === classId)), [classes, classId]);
-  
+  const cls = useMemo(
+    () => classes.find((c: any) => c.id === classId || c._id === classId),
+    [classes, classId],
+  );
+
   const students = useMemo(() => {
     return (studentsRaw || []).map((s: any) => ({
       id: s.id || s._id,
@@ -57,7 +56,10 @@ export function ClassDetail({ classId, onBack }: Props) {
   }, [studentsRaw]);
 
   const subjects = useMemo(() => cls?.subjectPerformance || [], [cls]);
-  const ranked = useMemo(() => [...subjects].sort((a: any, b: any) => b.averageScore - a.averageScore), [subjects]);
+  const ranked = useMemo(
+    () => [...subjects].sort((a: any, b: any) => b.averageScore - a.averageScore),
+    [subjects],
+  );
   const top = ranked[0] || { subject: "N/A", averageScore: 0 };
   const weak = ranked[ranked.length - 1] || { subject: "N/A", averageScore: 0 };
 
@@ -124,9 +126,19 @@ export function ClassDetail({ classId, onBack }: Props) {
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Students" value={cls.studentCount} icon={Users} />
-        <StatCard label="Avg score" value={`${cls.avgScore}%`} icon={Award} delta={cls.trend} hint="vs previous term" />
+        <StatCard
+          label="Avg score"
+          value={`${cls.avgScore}%`}
+          icon={Award}
+          delta={cls.trend}
+          hint="vs previous term"
+        />
         <StatCard label="Tests taken" value={cls.testsTaken} icon={BookOpen} />
-        <StatCard label="Top subject" value={cls.topSubject.subject} hint={`${cls.topSubject.score}% avg`} />
+        <StatCard
+          label="Top subject"
+          value={cls.topSubject.subject}
+          hint={`${cls.topSubject.score}% avg`}
+        />
       </div>
 
       {/* Best/weak subject for class */}
@@ -137,7 +149,9 @@ export function ClassDetail({ classId, onBack }: Props) {
               <Award className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">Best in class</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                Best in class
+              </p>
               <p className="mt-1 text-base font-semibold">
                 {top.subject} · <span className="text-success">{top.averageScore}%</span>
               </p>
@@ -215,7 +229,9 @@ export function ClassDetail({ classId, onBack }: Props) {
               <TableBody>
                 {filtered.map((s) => (
                   <TableRow key={s.id}>
-                    <TableCell className="pl-5 font-mono text-xs text-muted-foreground">{s.rollNo}</TableCell>
+                    <TableCell className="pl-5 font-mono text-xs text-muted-foreground">
+                      {s.rollNo}
+                    </TableCell>
                     <TableCell className="font-medium">{s.name}</TableCell>
                     <TableCell className="text-right">
                       <span
@@ -232,14 +248,19 @@ export function ClassDetail({ classId, onBack }: Props) {
                       </span>
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{s.testsTaken}</TableCell>
-                    <TableCell className="text-right tabular-nums text-muted-foreground">{s.attendance}%</TableCell>
+                    <TableCell className="text-right tabular-nums text-muted-foreground">
+                      {s.attendance}%
+                    </TableCell>
                     <TableCell className="text-xs text-success">{s.strongSubject}</TableCell>
                     <TableCell className="text-xs text-destructive">{s.weakSubject}</TableCell>
                   </TableRow>
                 ))}
                 {filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
+                    <TableCell
+                      colSpan={7}
+                      className="py-10 text-center text-sm text-muted-foreground"
+                    >
                       No students match "{query}"
                     </TableCell>
                   </TableRow>

@@ -20,7 +20,7 @@ function DashboardIndex() {
         TEACHER: "/dashboard/teacher",
         SCHOOL: "/dashboard/school",
       };
-      
+
       const path = roleToPath[user.role] || "/dashboard/student";
       navigate({ to: path });
     }

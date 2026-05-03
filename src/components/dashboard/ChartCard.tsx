@@ -15,9 +15,7 @@ export function ChartCard({ title, subtitle, action, children, className }: Char
       <CardHeader className="flex flex-row items-start justify-between space-y-0 p-5 pb-2">
         <div>
           <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
-          {subtitle && (
-            <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
-          )}
+          {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
         </div>
         {action}
       </CardHeader>

@@ -164,7 +164,9 @@ function TestsView({ user }: { user: any }) {
     ? Math.round(completed.reduce((s: number, t: any) => s + (t.score || 0), 0) / completed.length)
     : 0;
   const avgAccuracy = completed.length
-    ? Math.round(completed.reduce((s: number, t: any) => s + (t.accuracy || 0), 0) / completed.length)
+    ? Math.round(
+        completed.reduce((s: number, t: any) => s + (t.accuracy || 0), 0) / completed.length,
+      )
     : 0;
 
   function toggleSort(k: SortKey) {
@@ -184,7 +186,11 @@ function TestsView({ user }: { user: any }) {
   }
 
   const hasActiveFilters =
-    query !== "" || subject !== "all" || difficulty !== "all" || status !== "all" || range !== "all";
+    query !== "" ||
+    subject !== "all" ||
+    difficulty !== "all" ||
+    status !== "all" ||
+    range !== "all";
 
   if (isTestsLoading) {
     return (
@@ -229,17 +235,28 @@ function TestsView({ user }: { user: any }) {
               </div>
 
               <Select value={subject} onValueChange={(v) => setSubject(v as Subject | "all")}>
-                <SelectTrigger><SelectValue placeholder="Subject" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Subject" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All subjects</SelectItem>
-                  {(["Mathematics", "Science", "English", "Social Studies"] as Subject[]).map((s) => (
-                    <SelectItem key={s} value={s}>{s}</SelectItem>
-                  ))}
+                  {(["Mathematics", "Science", "English", "Social Studies"] as Subject[]).map(
+                    (s) => (
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
 
-              <Select value={difficulty} onValueChange={(v) => setDifficulty(v as Difficulty | "all")}>
-                <SelectTrigger><SelectValue placeholder="Difficulty" /></SelectTrigger>
+              <Select
+                value={difficulty}
+                onValueChange={(v) => setDifficulty(v as Difficulty | "all")}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Difficulty" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All difficulties</SelectItem>
                   <SelectItem value="Easy">Easy</SelectItem>
@@ -249,7 +266,9 @@ function TestsView({ user }: { user: any }) {
               </Select>
 
               <Select value={status} onValueChange={(v) => setStatus(v as TestStatus | "all")}>
-                <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All statuses</SelectItem>
                   <SelectItem value="Completed">Completed</SelectItem>
@@ -259,7 +278,9 @@ function TestsView({ user }: { user: any }) {
               </Select>
 
               <Select value={range} onValueChange={(v) => setRange(v as Range)}>
-                <SelectTrigger><SelectValue placeholder="Time range" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Time range" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All time</SelectItem>
                   <SelectItem value="7d">Last 7 days</SelectItem>
@@ -293,13 +314,36 @@ function TestsView({ user }: { user: any }) {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <SortHead label="Subject" active={sortKey === "subject"} dir={sortDir} onClick={() => toggleSort("subject")} className="pl-5" />
+                    <SortHead
+                      label="Subject"
+                      active={sortKey === "subject"}
+                      dir={sortDir}
+                      onClick={() => toggleSort("subject")}
+                      className="pl-5"
+                    />
                     <TableHead>Chapter / Topic</TableHead>
                     <TableHead>Difficulty</TableHead>
-                    <SortHead label="Score" active={sortKey === "score"} dir={sortDir} onClick={() => toggleSort("score")} align="right" />
-                    <SortHead label="Accuracy" active={sortKey === "accuracy"} dir={sortDir} onClick={() => toggleSort("accuracy")} align="right" />
+                    <SortHead
+                      label="Score"
+                      active={sortKey === "score"}
+                      dir={sortDir}
+                      onClick={() => toggleSort("score")}
+                      align="right"
+                    />
+                    <SortHead
+                      label="Accuracy"
+                      active={sortKey === "accuracy"}
+                      dir={sortDir}
+                      onClick={() => toggleSort("accuracy")}
+                      align="right"
+                    />
                     <TableHead>Questions</TableHead>
-                    <SortHead label="Date" active={sortKey === "date"} dir={sortDir} onClick={() => toggleSort("date")} />
+                    <SortHead
+                      label="Date"
+                      active={sortKey === "date"}
+                      dir={sortDir}
+                      onClick={() => toggleSort("date")}
+                    />
                     <TableHead className="pr-5">Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -327,7 +371,9 @@ function TestRow({ t }: { t: TestAttempt }) {
         {t.topic}
       </TableCell>
       <TableCell>
-        <Badge variant="outline" className="font-normal">{t.difficulty}</Badge>
+        <Badge variant="outline" className="font-normal">
+          {t.difficulty}
+        </Badge>
       </TableCell>
       <TableCell className={cn("text-right font-semibold tabular-nums", scoreClass(t.score))}>
         {t.status === "Completed" ? `${t.score}%` : "—"}
@@ -338,7 +384,9 @@ function TestRow({ t }: { t: TestAttempt }) {
       <TableCell className="tabular-nums text-muted-foreground">{t.questionCount}</TableCell>
       <TableCell className="text-muted-foreground">{formatDate(t.date)}</TableCell>
       <TableCell className="pr-5">
-        <Badge variant={statusVariant(t.status)} className="font-normal">{t.status}</Badge>
+        <Badge variant={statusVariant(t.status)} className="font-normal">
+          {t.status}
+        </Badge>
       </TableCell>
     </TableRow>
   );

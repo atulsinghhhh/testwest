@@ -23,13 +23,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import {
-  useUser,
-  useTeacherStudents,
-  useBoards,
-  useGrades,
-  useSubjects,
-} from "@/lib/api/hooks";
+import { useUser, useTeacherStudents, useBoards, useGrades, useSubjects } from "@/lib/api/hooks";
 
 interface Props {
   open: boolean;
@@ -42,7 +36,7 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
   const { data: user } = useUser();
   const profileId = user?.profile?._id || "";
   const { data: myStudents = [] } = useTeacherStudents(profileId);
-  
+
   const [mode, setMode] = useState<Mode>("class");
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -52,7 +46,7 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
   const [dueDate, setDueDate] = useState(
     new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10),
   );
-  
+
   // Teachers usually have classes assigned in their profile
   const teacherClasses = useMemo(() => {
     return user?.profile?.classes || [];
@@ -118,7 +112,8 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
     }
     let label = "";
     if (mode === "class") label = `${classIds.length} class${classIds.length > 1 ? "es" : ""}`;
-    else if (mode === "students") label = `${studentIds.length} student${studentIds.length > 1 ? "s" : ""}`;
+    else if (mode === "students")
+      label = `${studentIds.length} student${studentIds.length > 1 ? "s" : ""}`;
     else {
       const group = customGroups.find((g: any) => (g.id || g._id) === groupId);
       label = group?.name ?? "group";
@@ -162,10 +157,14 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
             <div className="grid gap-2">
               <Label>Subject</Label>
               <Select value={subject} onValueChange={(v) => setSubject(v as typeof subject)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {user?.profile?.subjects?.map((s: string) => (
-                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -193,7 +192,9 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
             <div className="grid gap-2">
               <Label>Difficulty</Label>
               <Select value={difficulty} onValueChange={setDifficulty}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Easy">Easy</SelectItem>
                   <SelectItem value="Medium">Medium</SelectItem>
@@ -206,11 +207,7 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
                 <Calendar className="h-3 w-3" />
                 Due
               </Label>
-              <Input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-              />
+              <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
             </div>
           </div>
 
@@ -218,9 +215,15 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
             <Label>Assign to</Label>
             <Tabs value={mode} onValueChange={(v) => setMode(v as Mode)}>
               <TabsList className="w-full">
-                <TabsTrigger value="class" className="flex-1">Class</TabsTrigger>
-                <TabsTrigger value="students" className="flex-1">Individual students</TabsTrigger>
-                <TabsTrigger value="group" className="flex-1">Custom group</TabsTrigger>
+                <TabsTrigger value="class" className="flex-1">
+                  Class
+                </TabsTrigger>
+                <TabsTrigger value="students" className="flex-1">
+                  Individual students
+                </TabsTrigger>
+                <TabsTrigger value="group" className="flex-1">
+                  Custom group
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="class" className="mt-3">
@@ -260,11 +263,17 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
                             onCheckedChange={() => toggle(s._id || s.id, studentIds, setStudentIds)}
                           />
                           <div>
-                            <p className="text-sm font-medium">{s.firstName} {s.lastName}</p>
-                            <p className="text-xs text-muted-foreground">{s.rollNo || ""} · Class {s.className || ""}</p>
+                            <p className="text-sm font-medium">
+                              {s.firstName} {s.lastName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {s.rollNo || ""} · Class {s.className || ""}
+                            </p>
                           </div>
                         </div>
-                        <span className="text-xs tabular-nums text-muted-foreground">{s.avgScore || 0}%</span>
+                        <span className="text-xs tabular-nums text-muted-foreground">
+                          {s.avgScore || 0}%
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -287,7 +296,9 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold">{g.name}</p>
-                        <Badge variant="secondary" className="shrink-0">{g.studentIds.length} students</Badge>
+                        <Badge variant="secondary" className="shrink-0">
+                          {g.studentIds.length} students
+                        </Badge>
                       </div>
                       <p className="mt-0.5 text-xs text-muted-foreground">{g.description}</p>
                     </div>
@@ -299,12 +310,16 @@ export function AssignTestDialog({ open, onOpenChange }: Props) {
 
           <div className="rounded-lg bg-muted/50 p-3 text-sm">
             <span className="font-medium">{targetCount}</span>{" "}
-            <span className="text-muted-foreground">student{targetCount === 1 ? "" : "s"} will receive this test.</span>
+            <span className="text-muted-foreground">
+              student{targetCount === 1 ? "" : "s"} will receive this test.
+            </span>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
           <Button onClick={handleAssign}>Assign test</Button>
         </DialogFooter>
       </DialogContent>

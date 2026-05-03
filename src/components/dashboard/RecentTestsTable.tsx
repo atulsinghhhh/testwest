@@ -64,7 +64,9 @@ export function RecentTestsTable({
                   <span className="mx-1.5">·</span>
                   {t.topic}
                 </TableCell>
-                <TableCell className={cn("text-right font-semibold tabular-nums", scoreClass(t.score))}>
+                <TableCell
+                  className={cn("text-right font-semibold tabular-nums", scoreClass(t.score))}
+                >
                   {t.score}%
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-muted-foreground">

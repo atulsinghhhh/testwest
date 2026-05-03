@@ -58,7 +58,11 @@ export function SubjectRanking({ subjects }: Props) {
                     trendUp ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive",
                   )}
                 >
-                  {trendUp ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                  {trendUp ? (
+                    <TrendingUp className="h-3 w-3" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3" />
+                  )}
                   {Math.abs(s.trend)}%
                 </span>
               </div>

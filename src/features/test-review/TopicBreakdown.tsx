@@ -186,7 +186,8 @@ export function TopicBreakdown({ graded, subject }: Props) {
             <div>
               <h3 className="text-sm font-semibold tracking-tight">Topic & subtopic mastery</h3>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                See where you're strong, what needs attention, and what to restudy — with curated resources for each.
+                See where you're strong, what needs attention, and what to restudy — with curated
+                resources for each.
               </p>
             </div>
             <Sparkles className="h-4 w-4 shrink-0 text-accent-foreground" />
@@ -268,8 +269,8 @@ function TopicRow({ stat, subject }: { stat: TopicStat; subject: string }) {
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{stat.topic}</p>
               <p className="text-xs text-muted-foreground">
-                {stat.total} {stat.total === 1 ? "question" : "questions"} ·{" "}
-                {stat.subtopics.length} subtopic{stat.subtopics.length === 1 ? "" : "s"}
+                {stat.total} {stat.total === 1 ? "question" : "questions"} · {stat.subtopics.length}{" "}
+                subtopic{stat.subtopics.length === 1 ? "" : "s"}
               </p>
             </div>
           </div>

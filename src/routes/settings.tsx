@@ -9,7 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Lock, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -21,9 +27,15 @@ export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — TestWest" },
-      { name: "description", content: "Manage your TestWest profile, personal details, and request a grade change." },
+      {
+        name: "description",
+        content: "Manage your TestWest profile, personal details, and request a grade change.",
+      },
       { property: "og:title", content: "Settings — TestWest" },
-      { property: "og:description", content: "Update personal details and request academic changes." },
+      {
+        property: "og:description",
+        content: "Update personal details and request academic changes.",
+      },
     ],
   }),
   component: SettingsRoute,
@@ -112,15 +124,32 @@ function SettingsView({ user }: { user: any }) {
             <form onSubmit={handleSaveProfile} className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="firstName">First name</Label>
-                <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                <Input
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="lastName">Last name</Label>
-                <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                <Input
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
               </div>
               <div className="grid gap-2 sm:col-span-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled
+                />
               </div>
               <div className="sm:col-span-2 flex justify-end">
                 <Button type="submit" disabled={isSaving}>
@@ -139,9 +168,14 @@ function SettingsView({ user }: { user: any }) {
           </CardHeader>
           <CardContent className="space-y-4">
             <LockedField label="Role" value={user?.role || "STUDENT"} />
-            {user?.profile?.grade && <LockedField label="Grade" value={`Grade ${user.profile.grade}`} />}
+            {user?.profile?.grade && (
+              <LockedField label="Grade" value={`Grade ${user.profile.grade}`} />
+            )}
             {user?.profile?.board && <LockedField label="Board" value={user.profile.board} />}
-            <LockedField label="User ID" value={(user?._id || user?.id || "").slice(-8).toUpperCase()} />
+            <LockedField
+              label="User ID"
+              value={(user?._id || user?.id || "").slice(-8).toUpperCase()}
+            />
           </CardContent>
         </Card>
       </div>
@@ -153,14 +187,18 @@ function SettingsView({ user }: { user: any }) {
               <div>
                 <CardTitle className="text-base">Request grade change</CardTitle>
                 <CardDescription>
-                  Grade can only be updated by an admin. Submit a request with a reason and we'll forward it.
+                  Grade can only be updated by an admin. Submit a request with a reason and we'll
+                  forward it.
                 </CardDescription>
               </div>
               <Badge variant="secondary">Admin approval</Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleGradeRequest} className="grid gap-4 md:grid-cols-[200px_1fr_auto] md:items-end">
+            <form
+              onSubmit={handleGradeRequest}
+              className="grid gap-4 md:grid-cols-[200px_1fr_auto] md:items-end"
+            >
               <div className="grid gap-2">
                 <Label htmlFor="grade">Requested grade</Label>
                 <Select value={requestedGrade} onValueChange={setRequestedGrade}>

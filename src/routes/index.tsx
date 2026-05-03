@@ -15,8 +15,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "TestWest — K-12 Assessments & Insights" },
       {
         property: "og:description",
-        content:
-          "Customizable tests for Grades 1–12 with deep analytics for students and parents.",
+        content: "Customizable tests for Grades 1–12 with deep analytics for students and parents.",
       },
     ],
   }),
@@ -72,9 +71,9 @@ function Landing() {
               <span className="text-accent-foreground">See progress clearly.</span>
             </h1>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              TestWest lets students from Grade 1 to 12 generate focused tests by chapter,
-              topic, and difficulty — and gives parents calm, useful insight into how their
-              child is really doing.
+              TestWest lets students from Grade 1 to 12 generate focused tests by chapter, topic,
+              and difficulty — and gives parents calm, useful insight into how their child is really
+              doing.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">

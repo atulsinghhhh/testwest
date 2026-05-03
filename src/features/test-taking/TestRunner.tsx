@@ -180,7 +180,8 @@ export function TestRunner({ testId }: Props) {
             {test.subject} · {test.chapter} — {test.topic}
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Grade {test.grade} · {test.board} · {test.difficulty} · {test.questions.length} questions
+            Grade {test.grade} · {test.board} · {test.difficulty} · {test.questions.length}{" "}
+            questions
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -236,7 +237,11 @@ export function TestRunner({ testId }: Props) {
                 <FillBlankRenderer question={q} answer={a} onChange={(v) => setAnswer(q._id, v)} />
               )}
               {q.type === "Short answer" && (
-                <ShortAnswerRenderer question={q} answer={a} onChange={(v) => setAnswer(q._id, v)} />
+                <ShortAnswerRenderer
+                  question={q}
+                  answer={a}
+                  onChange={(v) => setAnswer(q._id, v)}
+                />
               )}
             </CardContent>
           </Card>
@@ -273,7 +278,6 @@ export function TestRunner({ testId }: Props) {
         <aside className="lg:sticky lg:top-20 lg:self-start">
           <Card>
             <CardContent className="p-4">
-              {/* @ts-ignore - mapping _id to id for palette */}
               <QuestionPalette
                 questions={test.questions.map((qu: any) => ({ ...qu, id: qu._id }))}
                 answers={answers}
@@ -295,8 +299,8 @@ export function TestRunner({ testId }: Props) {
               {stats.unanswered > 0 && (
                 <>
                   {" "}
-                  <strong>{stats.unanswered}</strong> {stats.unanswered === 1 ? "question is" : "questions are"} still
-                  unanswered.
+                  <strong>{stats.unanswered}</strong>{" "}
+                  {stats.unanswered === 1 ? "question is" : "questions are"} still unanswered.
                 </>
               )}{" "}
               You won't be able to change your answers after submitting.

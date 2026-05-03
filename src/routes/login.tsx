@@ -38,21 +38,21 @@ function LoginRoute() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-1 block">Email</label>
-            <Input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="you@example.com" 
-              required 
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
             />
           </div>
           <div>
             <label className="text-sm font-medium mb-1 block">Password</label>
-            <Input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <Button type="submit" disabled={loading} className="w-full">

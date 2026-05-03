@@ -38,9 +38,17 @@ export function TeacherDashboard() {
   const { data: subjects, isLoading: isAnalyticsLoading } = useTeacherAnalytics(profileId);
   const { data: students, isLoading: isStudentsLoading } = useTeacherStudents(profileId);
   const { data: topics, isLoading: isTopicsLoading } = useTeacherTopics(profileId);
-  const { data: assignments, isLoading: isAssignmentsLoading } = useAssignments({ teacherId: profileId });
+  const { data: assignments, isLoading: isAssignmentsLoading } = useAssignments({
+    teacherId: profileId,
+  });
 
-  const isLoading = isUserLoading || isStatsLoading || isAnalyticsLoading || isStudentsLoading || isTopicsLoading || isAssignmentsLoading;
+  const isLoading =
+    isUserLoading ||
+    isStatsLoading ||
+    isAnalyticsLoading ||
+    isStudentsLoading ||
+    isTopicsLoading ||
+    isAssignmentsLoading;
 
   if (isLoading) {
     return (
@@ -54,8 +62,12 @@ export function TeacherDashboard() {
   if (!user || !stats || !subjects || !students || !topics || !assignments) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] gap-4 text-center p-4">
-        <p className="text-destructive font-medium text-lg">Failed to load specialized teacher data.</p>
-        <p className="text-sm text-muted-foreground">Make sure you are logged in as a teacher and your profile exists.</p>
+        <p className="text-destructive font-medium text-lg">
+          Failed to load specialized teacher data.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Make sure you are logged in as a teacher and your profile exists.
+        </p>
       </div>
     );
   }
@@ -73,7 +85,8 @@ export function TeacherDashboard() {
               Welcome back, {user.firstName} {user.lastName}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Teaching {user.profile?.subjects?.join(", ") || "No subjects"} · {user.profile?.experienceYears || 0} yrs experience
+              Teaching {user.profile?.subjects?.join(", ") || "No subjects"} ·{" "}
+              {user.profile?.experienceYears || 0} yrs experience
             </p>
           </div>
           <Button size="lg" onClick={() => setAssignOpen(true)}>
@@ -85,11 +98,36 @@ export function TeacherDashboard() {
 
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <StatCard label="Students" value={stats.totalStudents} icon={Users} hint={`${stats.classes} classes`} />
-        <StatCard label="Avg score" value={`${stats.averageScore}%`} icon={TrendingUp} hint="Across my students" />
-        <StatCard label="Active" value={stats.activeAssignments} icon={ClipboardList} hint="Assignments" />
-        <StatCard label="Completed" value={stats.completedAssignments} icon={CheckCircle2} hint="This term" />
-        <StatCard label="Subjects" value={user.profile?.subjects?.length || 0} icon={BookOpen} hint={user.profile?.subjects?.[0] || "None"} />
+        <StatCard
+          label="Students"
+          value={stats.totalStudents}
+          icon={Users}
+          hint={`${stats.classes} classes`}
+        />
+        <StatCard
+          label="Avg score"
+          value={`${stats.averageScore}%`}
+          icon={TrendingUp}
+          hint="Across my students"
+        />
+        <StatCard
+          label="Active"
+          value={stats.activeAssignments}
+          icon={ClipboardList}
+          hint="Assignments"
+        />
+        <StatCard
+          label="Completed"
+          value={stats.completedAssignments}
+          icon={CheckCircle2}
+          hint="This term"
+        />
+        <StatCard
+          label="Subjects"
+          value={user.profile?.subjects?.length || 0}
+          icon={BookOpen}
+          hint={user.profile?.subjects?.[0] || "None"}
+        />
       </div>
 
       <Tabs defaultValue="overview" className="mt-8">
@@ -112,11 +150,15 @@ export function TeacherDashboard() {
                 </p>
                 <div className="mt-3 space-y-3">
                   {assignments.slice(0, 4).map((a: any) => (
-                    <div key={a.id || a._id} className="flex items-center justify-between gap-3 rounded-lg border bg-card p-3">
+                    <div
+                      key={a.id || a._id}
+                      className="flex items-center justify-between gap-3 rounded-lg border bg-card p-3"
+                    >
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{a.title}</p>
                         <p className="truncate text-xs text-muted-foreground">
-                          {a.targetLabel || a.className} · {a.submittedCount || 0}/{a.totalCount || 0} submitted
+                          {a.targetLabel || a.className} · {a.submittedCount || 0}/
+                          {a.totalCount || 0} submitted
                         </p>
                       </div>
                       <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -145,10 +187,7 @@ export function TeacherDashboard() {
         </TabsContent>
 
         <TabsContent value="students" className="mt-6">
-          <SectionHeader
-            title="My students"
-            subtitle={`${students.length} students`}
-          />
+          <SectionHeader title="My students" subtitle={`${students.length} students`} />
           <StudentRoster students={students} />
         </TabsContent>
 
@@ -158,10 +197,7 @@ export function TeacherDashboard() {
           </ChartCard>
 
           <div>
-            <SectionHeader
-              title="Topic mastery"
-              subtitle={`Performance per topic`}
-            />
+            <SectionHeader title="Topic mastery" subtitle={`Performance per topic`} />
             <TopicMasteryGrid topics={topics} />
           </div>
         </TabsContent>

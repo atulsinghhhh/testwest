@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/shell/AppShell";
 import { StudentDashboard } from "@/features/student/StudentDashboard";
 
-
 export const Route = createFileRoute("/dashboard/student")({
   head: () => ({
     meta: [
@@ -39,7 +38,9 @@ function StudentDashboardRoute() {
   return (
     <AppShell
       title="Student dashboard"
-      subtitle={user?.profile ? `Grade ${user.profile.grade} · ${user.profile.board}` : "Learner overview"}
+      subtitle={
+        user?.profile ? `Grade ${user.profile.grade} · ${user.profile.board}` : "Learner overview"
+      }
       role={user?.role || "STUDENT"}
       userName={user ? `${user.firstName} ${user.lastName}` : "Guest"}
     >

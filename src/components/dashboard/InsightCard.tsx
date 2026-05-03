@@ -10,7 +10,10 @@ interface InsightCardProps {
   className?: string;
 }
 
-const toneStyles: Record<InsightTone, { bg: string; icon: React.ComponentType<{ className?: string }>; iconBg: string }> = {
+const toneStyles: Record<
+  InsightTone,
+  { bg: string; icon: React.ComponentType<{ className?: string }>; iconBg: string }
+> = {
   positive: {
     bg: "border-success/20",
     icon: CheckCircle2,
@@ -39,7 +42,9 @@ export function InsightCard({ tone, title, description, className }: InsightCard
   return (
     <Card className={cn("transition-shadow hover:shadow-md", t.bg, className)}>
       <CardContent className="flex gap-3 p-5">
-        <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", t.iconBg)}>
+        <span
+          className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", t.iconBg)}
+        >
           <Icon className="h-4 w-4" />
         </span>
         <div className="min-w-0">

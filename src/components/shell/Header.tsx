@@ -41,26 +41,18 @@ export function Header({ title, subtitle, role, userName }: HeaderProps) {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <h1 className="truncate text-base font-semibold tracking-tight md:text-lg">
-            {title}
-          </h1>
+          <h1 className="truncate text-base font-semibold tracking-tight md:text-lg">{title}</h1>
           <RoleBadge role={role} />
         </div>
         {subtitle && (
-          <p className="hidden truncate text-xs text-muted-foreground md:block">
-            {subtitle}
-          </p>
+          <p className="hidden truncate text-xs text-muted-foreground md:block">{subtitle}</p>
         )}
       </div>
 
       <div className="hidden md:block">
         <div className="relative">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search topics, tests…"
-            className="h-9 w-64 pl-8"
-            disabled
-          />
+          <Input placeholder="Search topics, tests…" className="h-9 w-64 pl-8" disabled />
         </div>
       </div>
 
@@ -102,7 +94,7 @@ export function Header({ title, subtitle, role, userName }: HeaderProps) {
             className="cursor-pointer text-destructive focus:text-destructive"
             onSelect={() => {
               toast.success("Logging out...");
-              import('@/services/api').then(({ authService }) => authService.logout());
+              import("@/services/api").then(({ authService }) => authService.logout());
             }}
           >
             <LogOut className="mr-2 h-4 w-4" />

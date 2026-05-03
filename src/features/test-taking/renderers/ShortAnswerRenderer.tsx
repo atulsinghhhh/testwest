@@ -23,7 +23,9 @@ export function ShortAnswerRenderer({ answer, onChange }: Props) {
       />
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>Tip: include key concepts in your answer.</span>
-        <span className="tabular-nums">{text.trim().split(/\s+/).filter(Boolean).length} words</span>
+        <span className="tabular-nums">
+          {text.trim().split(/\s+/).filter(Boolean).length} words
+        </span>
       </div>
     </div>
   );
