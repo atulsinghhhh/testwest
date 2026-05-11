@@ -23,7 +23,7 @@ app.use(helmet());
 app.use(express.json({ limit: "1mb" }));
 app.use(
   cors({
-    origin: env.clientOrigins,
+    origin: true,
     credentials: true,
   }),
 );
