@@ -1,6 +1,4 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-
-import appCss from "../styles.css?url";
+import { Outlet, Link, createRootRoute, HeadContent } from "@tanstack/react-router";
 
 function NotFoundComponent() {
   return (
@@ -62,31 +60,10 @@ export const Route = createRootRoute({
           "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8c03a735-fac7-4f76-9ce2-3a598e924a9b/id-preview-5f6ae0ba--bd788ce3-3b17-46be-9fcb-ef44679a8b99.lovable.app-1776680233424.png",
       },
     ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
   }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -94,8 +71,11 @@ const queryClient = new QueryClient();
 
 function RootComponent() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Outlet />
-    </QueryClientProvider>
+    <>
+      <HeadContent />
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    </>
   );
 }
