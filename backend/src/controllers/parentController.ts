@@ -100,13 +100,13 @@ export async function getParentChildren(req: Request, res: Response) {
   // Try to find by Profile ID first, then by User ID
   let parent = await ParentProfile.findById(id).populate({
     path: "children",
-    populate: { path: "user", select: "firstName lastName avatarUrl" },
+    populate: { path: "user", select: "firstName lastName avatarUrl studentId" },
   });
 
   if (!parent) {
     parent = await ParentProfile.findOne({ user: id }).populate({
       path: "children",
-      populate: { path: "user", select: "firstName lastName avatarUrl" },
+      populate: { path: "user", select: "firstName lastName avatarUrl studentId" },
     });
   }
 
@@ -117,6 +117,7 @@ export async function getParentChildren(req: Request, res: Response) {
   const children = (parent.children as any[] || []).map((c) => ({
     id: String(c._id),
     name: c.user ? `${c.user.firstName} ${c.user.lastName}`.trim() : "Student",
+    studentId: c.user?.studentId || "",
     grade: c.grade,
     board: c.board,
     avatarUrl: c.avatarUrl || c.user?.avatarUrl || "",
@@ -267,10 +268,24 @@ export async function linkChild(req: Request, res: Response) {
   if (!parent) return res.status(404).json({ error: "Parent not found" });
 
   const { StudentProfile } = require("../models/StudentProfile");
-  const student = await StudentProfile.findOne({ $or: [{ _id: studentId }, { user: studentId }] });
-  if (!student) return res.status(404).json({ error: "Student not found" });
+  const student = await StudentProfile.findOne({ 
+    $or: [
+      { _id: mongoose.Types.ObjectId.isValid(studentId) ? studentId : new mongoose.Types.ObjectId() }, 
+      { user: mongoose.Types.ObjectId.isValid(studentId) ? studentId : new mongoose.Types.ObjectId() }
+    ] 
+  }).populate("user");
 
-  const studentIdObj = student._id as any;
+  let foundStudent = student;
+  if (!foundStudent) {
+    const user = await User.findOne({ studentId: studentId.toUpperCase() });
+    if (user) {
+      foundStudent = await StudentProfile.findOne({ user: user._id }).populate("user");
+    }
+  }
+
+  if (!foundStudent) return res.status(404).json({ error: "Student not found" });
+
+  const studentIdObj = foundStudent._id as any;
   if (parent.children.some((cId: any) => cId.toString() === studentIdObj.toString())) {
     return res.status(400).json({ error: "Student already linked to this parent" });
   }

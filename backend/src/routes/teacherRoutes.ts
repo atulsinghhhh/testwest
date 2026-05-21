@@ -8,9 +8,11 @@ import {
   deleteTeacher,
   getTeacherStats,
   getTeacherStudents,
+  getTeacherClasses,
   getTeacherSubjectAnalytics,
   getTeacherTopicMastery,
 } from "../controllers/teacherController";
+import { createStudent } from "../controllers/studentController";
 import { validate } from "../middleware/validate";
 
 const router = Router();
@@ -66,6 +68,8 @@ router.patch("/:id", validate(updateSchema), updateTeacher);
 router.delete("/:id", deleteTeacher);
 router.get("/:id/stats", getTeacherStats);
 router.get("/:id/students", getTeacherStudents);
+router.get("/:id/classes", getTeacherClasses);
+router.post("/:id/students", createStudent);
 router.get("/:id/analytics/subjects", getTeacherSubjectAnalytics);
 router.get("/:id/analytics/topics", getTeacherTopicMastery);
 

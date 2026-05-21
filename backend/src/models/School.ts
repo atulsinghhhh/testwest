@@ -6,6 +6,7 @@ const schoolSchema = new mongoose.Schema(
     board: { type: String, required: true },
     city: { type: String, default: "" },
     principal: { type: String, default: "" },
+    allowStudentTestCreation: { type: Boolean, default: true },
   },
   { timestamps: true },
 );

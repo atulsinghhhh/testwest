@@ -103,8 +103,12 @@ export async function register(req: Request, res: Response) {
 
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
+  const identifier = email.toLowerCase();
 
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const user = await User.findOne({
+    $or: [{ email: identifier }, { studentId: identifier.toUpperCase() }],
+  });
+
   if (!user) {
     return res.status(401).json({ error: "Invalid credentials" });
   }

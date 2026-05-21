@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User";
 import { StudentProfile } from "../models/StudentProfile";
+import { TeacherProfile } from "../models/TeacherProfile";
 import { Test } from "../models/Test";
 import { Assignment } from "../models/Assignment";
+import { Question } from "../models/Question";
 import { getPagination } from "../middleware/pagination";
 
 function toTestAttempt(test: any) {
@@ -67,15 +69,38 @@ export async function getStudent(req: Request, res: Response) {
   return res.json(profile);
 }
 
+async function generateStudentId() {
+  let studentId = "";
+  let exists = true;
+  while (exists) {
+    const digits = Math.floor(10000 + Math.random() * 90000); // 5 digits
+    studentId = `P${digits}`;
+    const user = await User.findOne({ studentId });
+    if (!user) exists = false;
+  }
+  return studentId;
+}
+
 export async function createStudent(req: Request, res: Response) {
   const { user, profile } = req.body;
   const existing = await User.findOne({ email: user.email.toLowerCase() });
   if (existing) return res.status(400).json({ error: "Email already exists" });
 
   const passwordHash = await bcrypt.hash(user.password, 10);
+  const studentId = await generateStudentId();
+
+  let schoolId = profile.schoolId;
+  // If created via teacher route (/:id/students), inherit schoolId from teacher
+  if (!schoolId && req.params.id && mongoose.Types.ObjectId.isValid(req.params.id as string)) {
+    const teacher = await TeacherProfile.findById(req.params.id);
+    if (teacher) {
+      schoolId = teacher.schoolId;
+    }
+  }
 
   const newUser = await User.create({
     email: user.email.toLowerCase(),
+    studentId,
     passwordHash,
     role: "STUDENT",
     firstName: user.firstName,
@@ -84,20 +109,78 @@ export async function createStudent(req: Request, res: Response) {
     bio: user.bio || "",
     phone: user.phone || "",
     city: user.city || "",
+    schoolId: schoolId || null,
   });
+
+  const isClassIdValid = mongoose.Types.ObjectId.isValid(profile.classId);
 
   const newProfile = await StudentProfile.create({
     user: newUser._id,
     grade: profile.grade,
     board: profile.board,
     avatarUrl: profile.avatarUrl || "",
-    schoolId: profile.schoolId || null,
-    classId: profile.classId || null,
-    section: profile.section || "",
+    schoolId: schoolId || null,
+    classId: isClassIdValid ? profile.classId : null,
+    section: profile.section || (!isClassIdValid ? profile.classId : ""),
     rollNo: profile.rollNo || "",
   });
 
-  return res.status(201).json({ user: newUser, profile: newProfile });
+  // Automatically create tests for active assignments matching this student's class
+  if (newProfile.classId) {
+    try {
+      const activeAssignments = await Assignment.find({
+        "target.classIds": newProfile.classId,
+        status: "Assigned",
+        dueDate: { $gte: new Date() }
+      });
+
+      for (const assignment of activeAssignments) {
+        // Check if test already exists (shouldn't for a new student, but safe)
+        const existingTest = await Test.findOne({ 
+          assignmentId: assignment._id, 
+          studentId: newProfile._id 
+        });
+
+        if (!existingTest) {
+          const query: Record<string, any> = { subject: assignment.subject };
+          if (assignment.chapter) query.chapter = assignment.chapter;
+          if (assignment.topic) query.topic = assignment.topic;
+          if (assignment.difficulty) query.difficulty = assignment.difficulty;
+
+          const questions = await Question.aggregate([
+            { $match: query },
+            { $sample: { size: Number(assignment.questionCount) || 10 } },
+          ]);
+
+          if (questions.length > 0) {
+            const testQuestions = questions.map((q: any) => ({
+              originalQuestionId: q._id,
+              body: q.body,
+              options: q.options,
+              answer: q.answer,
+              explanation: q.explanation,
+            }));
+
+            await Test.create({
+              studentId: newProfile._id,
+              assignmentId: assignment._id,
+              subject: assignment.subject,
+              chapter: assignment.chapter,
+              topic: assignment.topic,
+              difficulty: assignment.difficulty,
+              status: "Pending",
+              questions: testQuestions,
+            });
+            console.log(`Auto-created test for new student ${newProfile._id} for assignment ${assignment._id}`);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error auto-creating tests for new student:", error);
+    }
+  }
+
+  return res.status(201).json({ user: newUser, profile: newProfile, studentId });
 }
 
 export async function updateStudent(req: Request, res: Response) {
@@ -312,12 +395,19 @@ export async function getStudentDashboard(req: Request, res: Response) {
       grade: studentProfile?.grade || 0,
       board: studentProfile?.board || "",
       avatarUrl: studentProfile?.avatarUrl || (studentProfile?.user as any)?.avatarUrl || "",
+      allowStudentTestCreation: studentProfile?.schoolId 
+        ? (await mongoose.model("School").findById(studentProfile.schoolId))?.allowStudentTestCreation ?? true
+        : true,
     },
-    activeAssignments: activeAssignments.map(a => ({
-      id: String(a._id),
-      title: a.title,
-      subject: a.subject,
-      dueDate: new Date(a.dueDate).toLocaleDateString(),
+    activeAssignments: await Promise.all(activeAssignments.map(async (a) => {
+      const test = await Test.findOne({ assignmentId: a._id, studentId });
+      return {
+        id: String(a._id),
+        testId: test ? String(test._id) : null,
+        title: a.title,
+        subject: a.subject,
+        dueDate: new Date(a.dueDate).toLocaleDateString(),
+      };
     })),
     stats: {
       testsTaken,

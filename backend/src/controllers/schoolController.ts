@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import { School } from "../models/School";
 import { User } from "../models/User";
@@ -57,16 +59,40 @@ export async function listClasses(req: Request, res: Response) {
 
 export async function createClass(req: Request, res: Response) {
   const newClass = await Class.create({ ...req.body, schoolId: req.params.id });
+  
+  // Link class to teacher if assigned
+  if (req.body.teacherId) {
+    await TeacherProfile.findByIdAndUpdate(req.body.teacherId, {
+      $addToSet: { classIds: newClass._id }
+    });
+  }
+  
   return res.status(201).json(newClass);
 }
 
 export async function updateClass(req: Request, res: Response) {
+  const oldClass = await Class.findById(req.params.classId);
   const updated = await Class.findOneAndUpdate(
     { _id: req.params.classId, schoolId: req.params.id },
     req.body,
     { new: true },
   );
   if (!updated) return res.status(404).json({ error: "Class not found" });
+
+  // Handle teacher change
+  if (req.body.teacherId && String(oldClass?.teacherId) !== String(req.body.teacherId)) {
+    // Remove from old teacher
+    if (oldClass?.teacherId) {
+      await TeacherProfile.findByIdAndUpdate(oldClass.teacherId, {
+        $pull: { classIds: updated._id }
+      });
+    }
+    // Add to new teacher
+    await TeacherProfile.findByIdAndUpdate(req.body.teacherId, {
+      $addToSet: { classIds: updated._id }
+    });
+  }
+
   return res.json(updated);
 }
 
@@ -145,18 +171,23 @@ export async function getSchoolStats(req: Request, res: Response) {
     trend: 0,
   }));
 
-  // Dynamic Grade Performance
+  // Dynamic Grade Performance for all grades 1-12
   const gradeMap = new Map<string, { total: number; count: number }>();
+  for (let i = 1; i <= 12; i++) {
+    gradeMap.set(String(i), { total: 0, count: 0 });
+  }
+
   students.forEach((s: any) => {
     const g = String(s.grade);
-    const gs = gradeMap.get(g) || { total: 0, count: 0 };
-    // Find tests for this student
-    const sTests = tests.filter(t => String(t.studentId) === String(s._id));
-    sTests.forEach(t => {
-      gs.total += t.score || 0;
-      gs.count += 1;
-    });
-    gradeMap.set(g, gs);
+    if (gradeMap.has(g)) {
+      const gs = gradeMap.get(g)!;
+      // Find tests for this student
+      const sTests = tests.filter(t => String(t.studentId) === String(s._id));
+      sTests.forEach(t => {
+        gs.total += t.score || 0;
+        gs.count += 1;
+      });
+    }
   });
 
   const gradePerformance = Array.from(gradeMap.entries()).map(([grade, v]) => ({
@@ -176,10 +207,8 @@ export async function getSchoolStats(req: Request, res: Response) {
     bestSubject: ranked[0] || { subject: "N/A", averageScore: 0, testsTaken: 0, trend: 0 },
     weakSubject: ranked[ranked.length - 1] || { subject: "N/A", averageScore: 0, testsTaken: 0, trend: 0 },
     subjectPerformance,
-    gradePerformance: gradePerformance.length ? gradePerformance : [
-        { grade: "6", averageScore: 0, testsTaken: 0 },
-        { grade: "7", averageScore: 0, testsTaken: 0 }
-    ],
+    gradePerformance: gradePerformance.length ? gradePerformance : 
+        Array.from({ length: 12 }, (_, i) => ({ grade: String(i + 1), averageScore: 0, testsTaken: 0 })),
   });
 }
 
@@ -218,15 +247,16 @@ export async function listTeachers(req: Request, res: Response) {
 }
 
 export async function createTeacher(req: Request, res: Response) {
-  const { email, password, firstName, lastName, subjects, experience } = req.body;
+  const { email, password, firstName, lastName, subjects, experience, classIds } = req.body;
   const schoolId = req.params.id;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) return res.status(400).json({ error: "User already exists" });
 
+  const passwordHash = await bcrypt.hash(password, 10);
   const user = await User.create({
     email,
-    passwordHash: password, // In production, hash this!
+    passwordHash,
     firstName,
     lastName,
     role: "TEACHER",
@@ -237,9 +267,17 @@ export async function createTeacher(req: Request, res: Response) {
     user: user._id,
     schoolId,
     subjects,
-    experience,
-    classIds: []
+    experienceYears: experience || 0,
+    classIds: classIds || []
   });
+
+  // If classIds were provided, update those classes to set this teacher
+  if (classIds && classIds.length > 0) {
+    await mongoose.model("Class").updateMany(
+      { _id: { $in: classIds } },
+      { $set: { teacherId: teacher._id } }
+    );
+  }
 
   return res.status(201).json(teacher);
 }

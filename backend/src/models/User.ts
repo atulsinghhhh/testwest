@@ -4,6 +4,7 @@ export const USER_ROLES = ["STUDENT", "PARENT", "TEACHER", "SCHOOL", "SOLO"] as 
 
 export interface IUser extends Document {
   email: string;
+  studentId?: string; // 6-digit unique ID for students
   passwordHash: string;
   role: (typeof USER_ROLES)[number];
   firstName: string;
@@ -18,6 +19,7 @@ export interface IUser extends Document {
 const userSchema = new mongoose.Schema<IUser>(
   {
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    studentId: { type: String, unique: true, sparse: true },
     passwordHash: { type: String, required: true },
     role: { type: String, enum: USER_ROLES, required: true },
     firstName: { type: String, required: true, trim: true },

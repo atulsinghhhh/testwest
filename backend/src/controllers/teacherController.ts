@@ -1,11 +1,14 @@
+import mongoose from "mongoose";
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User";
 import { TeacherProfile } from "../models/TeacherProfile";
 import { StudentProfile } from "../models/StudentProfile";
 import { Class } from "../models/Class";
+import { CustomGroup } from "../models/CustomGroup";
 import { Assignment } from "../models/Assignment";
 import { Test } from "../models/Test";
+import { Question } from "../models/Question";
 import { getPagination } from "../middleware/pagination";
 
 export async function listTeachers(req: Request, res: Response) {
@@ -117,12 +120,18 @@ export async function getTeacherStats(req: Request, res: Response) {
     status: "Completed",
   });
 
+  const school = teacher.schoolId ? await mongoose.model("School").findById(teacher.schoolId) : null;
+  const grades = [...new Set(classes.map(c => c.grade))].sort((a,b) => Number(a)-Number(b));
+
   return res.json({
     totalStudents: students.length,
     classes: classes.length,
     activeAssignments,
     completedAssignments,
     averageScore,
+    board: school?.board || "N/A",
+    grades: grades.length ? grades.join(", ") : "N/A",
+    primarySubject: teacher.subjects?.[0] || "N/A"
   });
 }
 
@@ -149,6 +158,14 @@ export async function getTeacherStudents(req: Request, res: Response) {
       trend: 0,
     })),
   );
+}
+
+export async function getTeacherClasses(req: Request, res: Response) {
+  const teacher = await TeacherProfile.findById(req.params.id);
+  if (!teacher) return res.status(404).json({ error: "Teacher not found" });
+
+  const classes = await Class.find({ _id: { $in: teacher.classIds } });
+  return res.json(classes);
 }
 
 export async function getTeacherSubjectAnalytics(req: Request, res: Response) {
@@ -211,23 +228,139 @@ export async function getTeacherTopicMastery(req: Request, res: Response) {
 }
 
 export async function listAssignments(req: Request, res: Response) {
-  const { page, limit, skip } = getPagination(req.query as Record<string, unknown>);
-  const filter: Record<string, unknown> = {};
-  if (req.query.teacherId) filter.teacherId = req.query.teacherId;
-  const [total, assignments] = await Promise.all([
-    Assignment.countDocuments(filter),
-    Assignment.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }),
-  ]);
-  return res.json({ data: assignments, page, limit, total });
+  try {
+    const { page, limit, skip } = getPagination(req.query as Record<string, unknown>);
+    const filter: Record<string, unknown> = {};
+    if (req.query.teacherId) filter.teacherId = req.query.teacherId;
+
+    const [total, assignments] = await Promise.all([
+      Assignment.countDocuments(filter),
+      Assignment.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+    ]);
+    return res.json({ data: assignments, page, limit, total });
+  } catch (error) {
+    console.error("Error in listAssignments:", error);
+    return res.status(500).json({ error: "Failed to list assignments" });
+  }
 }
 
 export async function createAssignment(req: Request, res: Response) {
-  console.log("Creating assignment with body:", JSON.stringify(req.body, null, 2));
-  const assignment = await Assignment.create(req.body);
-  console.log("Assignment created successfully:", assignment._id);
-  return res.status(201).json(assignment);
-}
+  try {
+    console.log("Creating assignment with body:", JSON.stringify(req.body, null, 2));
 
+    // Validate target IDs
+    const { target } = req.body;
+    if (target.type === "class" && target.classIds) {
+      target.classIds = target.classIds.filter((id: string) => mongoose.Types.ObjectId.isValid(id));
+    }
+    if (target.type === "students" && target.studentIds) {
+      target.studentIds = target.studentIds.filter((id: string) => mongoose.Types.ObjectId.isValid(id));
+    }
+    if (target.type === "group" && target.groupId && !mongoose.Types.ObjectId.isValid(target.groupId)) {
+      target.groupId = undefined;
+    }
+
+    // Trim string fields
+    if (req.body.subject) req.body.subject = req.body.subject.trim();
+    if (req.body.chapter) req.body.chapter = req.body.chapter.trim();
+    if (req.body.topic) req.body.topic = req.body.topic.trim();
+
+    // Robust date parsing for dueDate
+    if (typeof req.body.dueDate === 'string' && req.body.dueDate.includes('/')) {
+      const parts = req.body.dueDate.split('/');
+      if (parts.length === 3) {
+        const [d, m, y] = parts.map(Number);
+        req.body.dueDate = new Date(y, m - 1, d);
+      }
+    }
+
+    const assignment = await Assignment.create(req.body);
+    console.log("Assignment created successfully:", assignment._id);
+
+    // Automatically create tests for targeted students
+    const { subject, chapter, topic, difficulty, questionCount } = req.body;
+    let studentIds: mongoose.Types.ObjectId[] = [];
+
+    if (target.type === "class" && target.classIds && target.classIds.length > 0) {
+      const students = await StudentProfile.find({ classId: { $in: target.classIds } });
+      studentIds = students.map(s => s._id as mongoose.Types.ObjectId);
+    } else if (target.type === "students" && target.studentIds && target.studentIds.length > 0) {
+      studentIds = target.studentIds.map((id: string) => new mongoose.Types.ObjectId(id));
+    } else if (target.type === "group" && target.groupId) {
+      const group = await CustomGroup.findById(target.groupId);
+      if (group && group.studentIds) {
+        studentIds = group.studentIds;
+      }
+    }
+
+    if (studentIds.length > 0) {
+      // Update assignment counts
+      assignment.totalStudents = studentIds.length;
+      assignment.notStarted = studentIds.length;
+      await assignment.save();
+
+      // Fetch questions once for all students to ensure they get the same test
+      const query: Record<string, any> = { subject, grade: Number(req.body.grade) || 11 };
+      
+      // Get board from school
+      const schoolId = req.body.schoolId || (await TeacherProfile.findById(assignment.teacherId))?.schoolId;
+      if (schoolId) {
+        const school = await mongoose.model("School").findById(schoolId);
+        if (school && school.board) {
+          query.board = school.board;
+        }
+      }
+
+      if (chapter) query.chapter = chapter;
+      if (topic) query.topic = topic;
+      if (difficulty) query.difficulty = difficulty;
+
+      const questions = await Question.aggregate([
+        { $match: query },
+        { $sample: { size: Number(questionCount) || 10 } },
+      ]);
+
+      if (questions.length > 0) {
+        const testQuestions = questions.map((q: any) => ({
+          originalQuestionId: q._id,
+          body: q.body,
+          options: q.options,
+          answer: q.answer,
+          explanation: q.explanation,
+        }));
+
+        // Create a Test record for each student
+        const testPromises = studentIds.map(studentId =>
+          Test.create({
+            studentId,
+            assignmentId: assignment._id,
+            subject,
+            chapter,
+            topic,
+            difficulty,
+            status: "Pending",
+            questions: testQuestions,
+          })
+        );
+        await Promise.all(testPromises);
+        console.log(`Created ${studentIds.length} test records for assignment ${assignment._id}`);
+      } else {
+        console.warn("No questions found for assignment parameters, tests not created.");
+        return res.status(201).json({ 
+          ...assignment.toObject(), 
+          warning: "Assignment created, but no matching questions were found to generate student tests. Please check your subject/chapter/topic/grade."
+        });
+      }
+    }
+
+    return res.status(201).json(assignment);
+  } catch (error: any) {
+    console.error("Error in createAssignment:", error);
+    return res.status(error.name === "ValidationError" ? 400 : 500).json({ 
+      error: error.message || "Failed to create assignment" 
+    });
+  }
+}
 export async function updateAssignment(req: Request, res: Response) {
   const assignment = await Assignment.findByIdAndUpdate(req.params.id, req.body, { new: true });
   if (!assignment) return res.status(404).json({ error: "Assignment not found" });

@@ -4,6 +4,9 @@ import { Question } from "../models/Question";
 export async function getBoards(req: Request, res: Response) {
   try {
     const rawBoards = await Question.distinct("board");
+    // Standard boards to always include
+    const standardBoards = ["CBSE", "ICSE", "IGCSE", "IB", "State Board"];
+    
     // Normalize variants like "CBSE Board" to "CBSE"
     const normalized = rawBoards.map(b => {
       if (!b) return b;
@@ -11,7 +14,8 @@ export async function getBoards(req: Request, res: Response) {
       if (b.toLowerCase().includes("icse")) return "ICSE";
       return b;
     });
-    const uniqueBoards = [...new Set(normalized)].filter(b => b !== null && b !== "");
+    
+    const uniqueBoards = [...new Set([...standardBoards, ...normalized])].filter(b => b !== null && b !== "");
     return res.json(uniqueBoards);
   } catch (error: any) {
     console.error("Error in getBoards:", error);
@@ -21,8 +25,9 @@ export async function getBoards(req: Request, res: Response) {
 
 export async function getGrades(req: Request, res: Response) {
   try {
-    const grades = await Question.distinct("grade");
-    return res.json(grades.filter(g => g !== null).sort((a, b) => Number(a) - Number(b)));
+    // Return all grades from 1 to 12 as requested
+    const allGrades = Array.from({ length: 12 }, (_, i) => i + 1);
+    return res.json(allGrades);
   } catch (error: any) {
     console.error("Error in getGrades:", error);
     return res.status(500).json({ error: error.message });

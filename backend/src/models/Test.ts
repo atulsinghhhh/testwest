@@ -18,6 +18,7 @@ const testQuestionSchema = new mongoose.Schema(
 const testSchema = new mongoose.Schema(
   {
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: "StudentProfile", required: true },
+    assignmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Assignment", default: null },
     subject: { type: String, required: true },
     chapter: { type: String, default: "" },
     topic: { type: String, default: "" },

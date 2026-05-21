@@ -34,6 +34,7 @@ const schoolUpdateSchema = z.object({
     board: z.string().optional(),
     city: z.string().optional(),
     principal: z.string().optional(),
+    allowStudentTestCreation: z.boolean().optional(),
   }),
 });
 
