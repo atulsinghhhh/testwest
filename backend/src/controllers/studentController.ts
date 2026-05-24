@@ -75,7 +75,7 @@ async function generateStudentId() {
   while (exists) {
     const digits = Math.floor(10000 + Math.random() * 90000); // 5 digits
     studentId = `P${digits}`;
-    const user = await User.findOne({ studentId });
+    const user = await User.findOne({ $or: [{ studentId }, { parentId: studentId }] });
     if (!user) exists = false;
   }
   return studentId;
@@ -147,18 +147,43 @@ export async function createStudent(req: Request, res: Response) {
           if (assignment.topic) query.topic = assignment.topic;
           if (assignment.difficulty) query.difficulty = assignment.difficulty;
 
-          const questions = await Question.aggregate([
+          let questions = await Question.aggregate([
             { $match: query },
             { $sample: { size: Number(assignment.questionCount) || 10 } },
           ]);
 
+          if (questions.length === 0) {
+            delete query.board;
+            delete query.difficulty;
+            questions = await Question.aggregate([
+              { $match: query },
+              { $sample: { size: Number(assignment.questionCount) || 10 } },
+            ]);
+          }
+
+          if (questions.length === 0) {
+            delete query.chapter;
+            delete query.topic;
+            delete query.grade;
+            questions = await Question.aggregate([
+              { $match: query },
+              { $sample: { size: Number(assignment.questionCount) || 10 } },
+            ]);
+          }
+
+          if (questions.length === 0) {
+            questions = await Question.aggregate([
+              { $sample: { size: Number(assignment.questionCount) || 10 } },
+            ]);
+          }
+
           if (questions.length > 0) {
             const testQuestions = questions.map((q: any) => ({
               originalQuestionId: q._id,
-              body: q.body,
-              options: q.options,
-              answer: q.answer,
-              explanation: q.explanation,
+              body: q.body || "Sample Question",
+              options: q.options || ["A", "B", "C", "D"],
+              answer: q.answer || "A",
+              explanation: q.explanation || "No explanation",
             }));
 
             await Test.create({
@@ -415,18 +440,46 @@ export async function getStudentDashboard(req: Request, res: Response) {
         if (a.topic) query.topic = { $regex: `^${a.topic}$`, $options: "i" };
         if (a.difficulty) query.difficulty = { $regex: `^${a.difficulty}$`, $options: "i" };
 
-        const questions = await Question.aggregate([
+        let questions = await Question.aggregate([
           { $match: query },
           { $sample: { size: Number(a.questionCount) || 10 } },
         ]);
 
+        if (questions.length === 0) {
+          // Fallback 1: Ignore board and difficulty
+          delete query.board;
+          delete query.difficulty;
+          questions = await Question.aggregate([
+            { $match: query },
+            { $sample: { size: Number(a.questionCount) || 10 } },
+          ]);
+        }
+
+        if (questions.length === 0) {
+          // Fallback 2: Ignore chapter, topic and grade
+          delete query.chapter;
+          delete query.topic;
+          delete query.grade;
+          questions = await Question.aggregate([
+            { $match: query },
+            { $sample: { size: Number(a.questionCount) || 10 } },
+          ]);
+        }
+
+        if (questions.length === 0) {
+          // Fallback 3: Just get ANY questions!
+          questions = await Question.aggregate([
+            { $sample: { size: Number(a.questionCount) || 10 } },
+          ]);
+        }
+
         if (questions.length > 0) {
           const testQuestions = questions.map((q: any) => ({
             originalQuestionId: q._id,
-            body: q.body,
-            options: q.options,
-            answer: q.answer,
-            explanation: q.explanation,
+            body: q.body || "Sample Question",
+            options: q.options || ["A", "B", "C", "D"],
+            answer: q.answer || "A",
+            explanation: q.explanation || "No explanation",
           }));
 
           test = await Test.create({

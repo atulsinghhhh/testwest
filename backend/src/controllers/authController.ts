@@ -12,6 +12,18 @@ function signToken(userId: string, role: string) {
   return jwt.sign({ userId, role }, env.jwtSecret, { expiresIn: "1d" });
 }
 
+async function generateParentId() {
+  let parentId = "";
+  let exists = true;
+  while (exists) {
+    const digits = Math.floor(10000 + Math.random() * 90000); // 5 digits
+    parentId = `P${digits}`;
+    const user = await User.findOne({ $or: [{ studentId: parentId }, { parentId }] });
+    if (!user) exists = false;
+  }
+  return parentId;
+}
+
 export async function register(req: Request, res: Response) {
   const { email, password, role, firstName, lastName, profile = {} } = req.body;
 
@@ -21,6 +33,12 @@ export async function register(req: Request, res: Response) {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
+  
+  let parentId;
+  if (role === "PARENT") {
+    parentId = await generateParentId();
+  }
+
   const user = await User.create({
     email: email.toLowerCase(),
     passwordHash,
@@ -31,6 +49,7 @@ export async function register(req: Request, res: Response) {
     bio: profile.bio || "",
     phone: profile.phone || "",
     city: profile.city || "",
+    parentId,
   });
 
   if (role === "STUDENT" || role === "SOLO") {
@@ -96,6 +115,7 @@ export async function register(req: Request, res: Response) {
       bio: user.bio,
       phone: user.phone,
       city: user.city,
+      parentId: user.parentId,
       profile: userProfile,
     },
   });
@@ -106,7 +126,7 @@ export async function login(req: Request, res: Response) {
   const identifier = email.toLowerCase();
 
   const user = await User.findOne({
-    $or: [{ email: identifier }, { studentId: identifier.toUpperCase() }],
+    $or: [{ email: identifier }, { studentId: identifier.toUpperCase() }, { parentId: identifier.toUpperCase() }],
   });
 
   if (!user) {
@@ -143,6 +163,7 @@ export async function login(req: Request, res: Response) {
       bio: user.bio,
       phone: user.phone,
       city: user.city,
+      parentId: user.parentId,
       profile,
     },
   });

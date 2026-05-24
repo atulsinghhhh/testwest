@@ -32,17 +32,31 @@ export async function getParent(req: Request, res: Response) {
   return res.json(parent);
 }
 
+async function generateParentId() {
+  let parentId = "";
+  let exists = true;
+  while (exists) {
+    const digits = Math.floor(10000 + Math.random() * 90000); // 5 digits
+    parentId = `P${digits}`;
+    const user = await User.findOne({ $or: [{ studentId: parentId }, { parentId }] });
+    if (!user) exists = false;
+  }
+  return parentId;
+}
+
 export async function createParent(req: Request, res: Response) {
   const { user } = req.body;
   const existing = await User.findOne({ email: user.email.toLowerCase() });
   if (existing) return res.status(400).json({ error: "Email already exists" });
 
   const passwordHash = await bcrypt.hash(user.password, 10);
+  const parentId = await generateParentId();
 
   const newUser = await User.create({
     email: user.email.toLowerCase(),
     passwordHash,
     role: "PARENT",
+    parentId,
     firstName: user.firstName,
     lastName: user.lastName,
     avatarUrl: user.avatarUrl || "",
