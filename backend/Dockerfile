@@ -3,12 +3,12 @@ FROM oven/bun:1.3.13
 
 WORKDIR /app
 
-# Render builds from the repo root, so copy the backend manifests explicitly.
-COPY backend/package.json backend/bun.lock* ./
+# Copy package manifests first for layer caching.
+COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile --production
 
 # Copy the backend source into the container.
-COPY backend/ ./
+COPY . ./
 
 ENV NODE_ENV=production
 
