@@ -84,7 +84,11 @@ export async function createTest(req: Request, res: Response) {
 export async function listTests(req: Request, res: Response) {
   const { page, limit, skip } = getPagination(req.query as Record<string, unknown>);
   const filter: Record<string, unknown> = {};
-  if (req.query.studentId) filter.studentId = req.query.studentId;
+  
+  // Enforce studentId filtering if the user is a student, or if not provided
+  const effectiveStudentId = req.query.studentId || (req.user as any)?._id;
+  if (effectiveStudentId) filter.studentId = effectiveStudentId;
+
   if (req.query.status) filter.status = req.query.status;
   if (req.query.subject) filter.subject = req.query.subject;
 

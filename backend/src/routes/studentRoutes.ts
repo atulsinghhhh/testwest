@@ -58,6 +58,8 @@ const updateSchema = z.object({
         classId: z.string().optional(),
         section: z.string().optional(),
         rollNo: z.string().optional(),
+        manualStrongTopics: z.array(z.string()).optional(),
+        manualWeakTopics: z.array(z.string()).optional(),
       })
       .optional(),
   }),

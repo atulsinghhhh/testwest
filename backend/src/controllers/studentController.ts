@@ -201,6 +201,10 @@ export async function updateStudent(req: Request, res: Response) {
   }
 
   Object.assign(profile, profileUpdates || {});
+  
+  if (profileUpdates?.manualStrongTopics) profile.manualStrongTopics = profileUpdates.manualStrongTopics;
+  if (profileUpdates?.manualWeakTopics) profile.manualWeakTopics = profileUpdates.manualWeakTopics;
+
   await profile.save();
 
   const updated = await StudentProfile.findById(req.params.id).populate(
@@ -400,7 +404,44 @@ export async function getStudentDashboard(req: Request, res: Response) {
         : true,
     },
     activeAssignments: await Promise.all(activeAssignments.map(async (a) => {
-      const test = await Test.findOne({ assignmentId: a._id, studentId });
+      let test = await Test.findOne({ assignmentId: a._id, studentId });
+      
+      if (!test) {
+        const query: Record<string, any> = {};
+        if (a.subject) query.subject = { $regex: `^${a.subject}$`, $options: "i" };
+        if (studentProfile?.grade) query.grade = Number(studentProfile.grade);
+        if (studentProfile?.board) query.board = { $regex: `^${studentProfile.board}$`, $options: "i" };
+        if (a.chapter) query.chapter = { $regex: `^${a.chapter}$`, $options: "i" };
+        if (a.topic) query.topic = { $regex: `^${a.topic}$`, $options: "i" };
+        if (a.difficulty) query.difficulty = { $regex: `^${a.difficulty}$`, $options: "i" };
+
+        const questions = await Question.aggregate([
+          { $match: query },
+          { $sample: { size: Number(a.questionCount) || 10 } },
+        ]);
+
+        if (questions.length > 0) {
+          const testQuestions = questions.map((q: any) => ({
+            originalQuestionId: q._id,
+            body: q.body,
+            options: q.options,
+            answer: q.answer,
+            explanation: q.explanation,
+          }));
+
+          test = await Test.create({
+            studentId,
+            assignmentId: a._id,
+            subject: a.subject,
+            chapter: a.chapter,
+            topic: a.topic,
+            difficulty: a.difficulty,
+            status: "Pending",
+            questions: testQuestions,
+          });
+        }
+      }
+
       return {
         id: String(a._id),
         testId: test ? String(test._id) : null,
@@ -417,19 +458,27 @@ export async function getStudentDashboard(req: Request, res: Response) {
     },
     scoreTrend,
     subjectPerformance,
-    weakTopics,
-    strongTopics,
+    weakTopics: studentProfile?.manualWeakTopics && studentProfile.manualWeakTopics.length > 0
+      ? studentProfile.manualWeakTopics.map((t: string) => ({ id: t, subject: t, topic: t, accuracy: 0, attempts: 0 }))
+      : weakTopics,
+    strongTopics: studentProfile?.manualStrongTopics && studentProfile.manualStrongTopics.length > 0
+      ? studentProfile.manualStrongTopics.map((t: string) => ({ id: t, subject: t, topic: t, accuracy: 100, attempts: 0 }))
+      : strongTopics,
     weakSubtopics,
     recentTests,
     focusInsights: [
       {
         title: "Bite-sized Recommendation",
-        text: "Your Geometry score dropped by 10%. Try 5 practice questions today.",
+        text: studentProfile?.manualWeakTopics && studentProfile.manualWeakTopics.length > 0
+          ? `Spend 20 mins on ${studentProfile.manualWeakTopics[0]} to boost your average.`
+          : "Your Geometry score dropped by 10%. Try 5 practice questions today.",
         type: "attention",
       },
       {
         title: "Weekly Achievement",
-        text: "You've mastered 'Quadratic Equations' with 95% accuracy!",
+        text: studentProfile?.manualStrongTopics && studentProfile.manualStrongTopics.length > 0
+          ? `You've mastered '${studentProfile.manualStrongTopics[0]}' with flying colors!`
+          : "You've mastered 'Quadratic Equations' with 95% accuracy!",
         type: "positive",
       },
       {

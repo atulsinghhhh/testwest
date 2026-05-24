@@ -100,8 +100,10 @@ export async function getTeacherStats(req: Request, res: Response) {
   const teacher = await TeacherProfile.findById(req.params.id);
   if (!teacher) return res.status(404).json({ error: "Teacher not found" });
 
-  const classes = await Class.find({ _id: { $in: teacher.classIds } });
-  const students = await StudentProfile.find({ classId: { $in: teacher.classIds } });
+  const query: any = teacher.schoolId ? { schoolId: teacher.schoolId } : { _id: { $in: teacher.classIds } };
+  const classes = await Class.find(query);
+  const classIds = classes.map(c => c._id);
+  const students = await StudentProfile.find({ classId: { $in: classIds } });
   const studentIds = students.map((s) => s._id);
   const completedTests = await Test.find({ studentId: { $in: studentIds }, status: "Completed" });
 
@@ -139,7 +141,11 @@ export async function getTeacherStudents(req: Request, res: Response) {
   const teacher = await TeacherProfile.findById(req.params.id);
   if (!teacher) return res.status(404).json({ error: "Teacher not found" });
 
-  const students = await StudentProfile.find({ classId: { $in: teacher.classIds } }).populate(
+  const query: any = teacher.schoolId ? { schoolId: teacher.schoolId } : { _id: { $in: teacher.classIds } };
+  const classes = await Class.find(query);
+  const classIds = classes.map(c => c._id);
+
+  const students = await StudentProfile.find({ classId: { $in: classIds } }).populate(
     "user",
     "firstName lastName avatarUrl",
   );
@@ -164,7 +170,14 @@ export async function getTeacherClasses(req: Request, res: Response) {
   const teacher = await TeacherProfile.findById(req.params.id);
   if (!teacher) return res.status(404).json({ error: "Teacher not found" });
 
-  const classes = await Class.find({ _id: { $in: teacher.classIds } });
+  const query: any = {};
+  if (teacher.schoolId) {
+    query.schoolId = teacher.schoolId;
+  } else {
+    query._id = { $in: teacher.classIds };
+  }
+
+  const classes = await Class.find(query).sort({ grade: 1, section: 1 });
   return res.json(classes);
 }
 
@@ -172,7 +185,10 @@ export async function getTeacherSubjectAnalytics(req: Request, res: Response) {
   const teacher = await TeacherProfile.findById(req.params.id);
   if (!teacher) return res.status(404).json({ error: "Teacher not found" });
 
-  const students = await StudentProfile.find({ classId: { $in: teacher.classIds } });
+  const query: any = teacher.schoolId ? { schoolId: teacher.schoolId } : { _id: { $in: teacher.classIds } };
+  const classes = await Class.find(query);
+  const classIds = classes.map(c => c._id);
+  const students = await StudentProfile.find({ classId: { $in: classIds } });
   const studentIds = students.map((s) => s._id);
   const tests = await Test.find({ studentId: { $in: studentIds }, status: "Completed" });
 
@@ -198,7 +214,10 @@ export async function getTeacherTopicMastery(req: Request, res: Response) {
   const teacher = await TeacherProfile.findById(req.params.id);
   if (!teacher) return res.status(404).json({ error: "Teacher not found" });
 
-  const students = await StudentProfile.find({ classId: { $in: teacher.classIds } });
+  const query: any = teacher.schoolId ? { schoolId: teacher.schoolId } : { _id: { $in: teacher.classIds } };
+  const classes = await Class.find(query);
+  const classIds = classes.map(c => c._id);
+  const students = await StudentProfile.find({ classId: { $in: classIds } });
   const studentIds = students.map((s) => s._id);
   const tests = await Test.find({ studentId: { $in: studentIds }, status: "Completed" });
 
@@ -300,20 +319,22 @@ export async function createAssignment(req: Request, res: Response) {
       await assignment.save();
 
       // Fetch questions once for all students to ensure they get the same test
-      const query: Record<string, any> = { subject, grade: Number(req.body.grade) || 11 };
+      const query: Record<string, any> = {};
+      if (subject) query.subject = { $regex: `^${subject}$`, $options: "i" };
+      query.grade = Number(req.body.grade) || 11;
       
       // Get board from school
       const schoolId = req.body.schoolId || (await TeacherProfile.findById(assignment.teacherId))?.schoolId;
       if (schoolId) {
         const school = await mongoose.model("School").findById(schoolId);
         if (school && school.board) {
-          query.board = school.board;
+          query.board = { $regex: `^${school.board}$`, $options: "i" };
         }
       }
 
-      if (chapter) query.chapter = chapter;
-      if (topic) query.topic = topic;
-      if (difficulty) query.difficulty = difficulty;
+      if (chapter) query.chapter = { $regex: `^${chapter}$`, $options: "i" };
+      if (topic) query.topic = { $regex: `^${topic}$`, $options: "i" };
+      if (difficulty) query.difficulty = { $regex: `^${difficulty}$`, $options: "i" };
 
       const questions = await Question.aggregate([
         { $match: query },

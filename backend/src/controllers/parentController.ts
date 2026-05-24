@@ -258,32 +258,29 @@ export async function getParentDashboard(req: Request, res: Response) {
 
 export async function linkChild(req: Request, res: Response) {
   const { id } = req.params;
-  const { studentId } = req.body;
+  const { studentId, password } = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id as string) || !mongoose.Types.ObjectId.isValid(studentId as string)) {
-    return res.status(400).json({ error: "Invalid ID format" });
+  if (!mongoose.Types.ObjectId.isValid(id as string) || !studentId || !password) {
+    return res.status(400).json({ error: "Invalid ID format or missing credentials" });
   }
 
   const parent = await ParentProfile.findOne({ $or: [{ _id: id }, { user: id }] });
   if (!parent) return res.status(404).json({ error: "Parent not found" });
 
   const { StudentProfile } = require("../models/StudentProfile");
-  const student = await StudentProfile.findOne({ 
-    $or: [
-      { _id: mongoose.Types.ObjectId.isValid(studentId) ? studentId : new mongoose.Types.ObjectId() }, 
-      { user: mongoose.Types.ObjectId.isValid(studentId) ? studentId : new mongoose.Types.ObjectId() }
-    ] 
-  }).populate("user");
+  
+  // Find the student user by studentId (like P83107)
+  const user = await User.findOne({ studentId: studentId.toUpperCase() });
+  if (!user) return res.status(404).json({ error: "Student not found" });
 
-  let foundStudent = student;
-  if (!foundStudent) {
-    const user = await User.findOne({ studentId: studentId.toUpperCase() });
-    if (user) {
-      foundStudent = await StudentProfile.findOne({ user: user._id }).populate("user");
-    }
+  // Verify the password
+  const match = await bcrypt.compare(password, user.passwordHash);
+  if (!match) {
+    return res.status(401).json({ error: "Incorrect student password" });
   }
 
-  if (!foundStudent) return res.status(404).json({ error: "Student not found" });
+  const foundStudent = await StudentProfile.findOne({ user: user._id }).populate("user");
+  if (!foundStudent) return res.status(404).json({ error: "Student profile not found" });
 
   const studentIdObj = foundStudent._id as any;
   if (parent.children.some((cId: any) => cId.toString() === studentIdObj.toString())) {
