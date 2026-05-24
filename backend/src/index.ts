@@ -37,6 +37,11 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });

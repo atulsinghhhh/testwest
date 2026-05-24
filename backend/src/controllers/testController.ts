@@ -11,7 +11,10 @@ function sanitizeTest(test: any) {
     sanitized.questions = sanitized.questions.map((q: any) => {
       // Use destructuring to ensure we get all data except sensitive fields
       const { answer, explanation, ...rest } = q;
-      return rest;
+      return {
+        ...rest,
+        id: rest.id || rest._id || rest.originalQuestionId,
+      };
     });
   }
   return sanitized;
@@ -57,6 +60,7 @@ export async function createTest(req: Request, res: Response) {
 
   const testQuestions = questions.map((q: any) => ({
     originalQuestionId: q._id,
+    type: q.type,
     body: q.body,
     options: q.options,
     answer: q.answer,
@@ -174,6 +178,7 @@ export async function generateTestSeries(req: Request, res: Response) {
     // 2. Create the test
     const testQuestions = questions.map((q: any) => ({
       originalQuestionId: q._id,
+      type: q.type,
       body: q.body,
       options: q.options,
       answer: q.answer,
